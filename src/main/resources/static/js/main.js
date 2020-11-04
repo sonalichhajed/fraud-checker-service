@@ -1,0 +1,1 @@
+console.info("==> Fraud Checker Service: Loaded main.js <==");
