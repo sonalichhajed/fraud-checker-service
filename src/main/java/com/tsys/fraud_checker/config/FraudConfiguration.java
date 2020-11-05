@@ -1,6 +1,5 @@
 package com.tsys.fraud_checker.config;
 
-import com.tsys.fraud_checker.services.VerificationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

@@ -2,8 +2,6 @@ package com.tsys.fraud_checker.spring.validators;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
