@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,8 +26,27 @@ import java.util.logging.Logger;
 // this needs to be annotated with @RestController and not
 // @Controller.  Once annotated with @RestController, you don't
 // need @ResponseBody annotation.
-
 @Controller
+
+// NOTE:
+// =====
+// We have to add Spring’s @Validated annotation to the controller
+// at class level to tell Spring to evaluate the constraint annotations
+// on method parameters.
+//
+// The @Validated annotation is only evaluated on class level in this
+// case, even though it’s allowed to be used on methods
+//
+// This was introduced, because the two GetMappings
+// 1. validatePathVariable
+// 2. validateRequestParameter
+// needed it.
+//
+// It was not necessary when earlier had only the PostMapping
+// 1. checkFraud
+// It was enough to have @Valid annotation on the method
+// parameter FraudCheckPayload.
+@Validated
 @RequestMapping("/")
 public class FraudCheckerController {
 
@@ -90,15 +110,19 @@ public class FraudCheckerController {
         }
     }
 
-    @GetMapping("/validatePathVariable/{id}")
+    @GetMapping("validatePathVariable/{id}")
     ResponseEntity<String> validatePathVariable(
-            @PathVariable("id") @Min(5) int id) {
+            @PathVariable("id")
+            @Min(5) int id) {
+        LOG.info(() -> String.format("validatePathVariable(), Got id = %d", id));
         return ResponseEntity.ok("valid");
     }
 
-    @GetMapping("/validateRequestParameter")
+    @GetMapping("validateRequestParameter")
     ResponseEntity<String> validateRequestParameter(
-            @RequestParam("param") @Min(5) int param) {
+            @RequestParam("param")
+            @Min(5) int param) {
+        LOG.info(() -> String.format("validateRequestParameter(), Got param = %d", param));
         return ResponseEntity.ok("valid");
     }
 }

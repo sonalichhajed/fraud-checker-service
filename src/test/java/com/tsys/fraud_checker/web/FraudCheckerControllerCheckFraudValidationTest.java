@@ -37,7 +37,7 @@ import static org.mockito.BDDMockito.given;
 @WebMvcTest(FraudCheckerController.class)
 @AutoConfigureMockMvc
 // We can verify the validation behavior with an integration test:
-public class FraudCheckerControllerRequestBodyValidationTest {
+public class FraudCheckerControllerCheckFraudValidationTest {
 
   @MockBean
   private VerificationService verificationService;
