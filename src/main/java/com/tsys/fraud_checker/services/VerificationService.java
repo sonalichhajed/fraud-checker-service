@@ -56,21 +56,21 @@ public class VerificationService {
 
   private int verifyCVV(CreditCard creditCard) throws InterruptedException {
     final int sleepMillis = randomNumberBetween(2000, 5000);
-    LOG.info(() -> String.format("{ 'hasValidCVV() will respond after ' : '%.3f seconds' }", ((float) sleepMillis)/1000));
+    LOG.info(() -> String.format("{ 'verifyCVV() will respond after ' : '%.3f seconds' }", ((float) sleepMillis)/1000));
     Thread.sleep(sleepMillis);
     final int index = randomNumberBetween(0, 2);
-    LOG.info(() -> String.format("{ 'hasValidCVV() Generating Response for value ==> ' : %d }", index));
+    LOG.info(() -> String.format("{ 'verifyCVV() Generating Response for value ==> ' : %d }", index));
     return index;
   }
 
-  private int verifyAddressWithCardIssuingBank(CreditCard creditCard) {
+  private int verifyAddressWithIssuingBank(CreditCard creditCard) {
     final int index = randomNumberBetween(0, 2);
-    LOG.info(() -> String.format("{ 'hasValidAddress() Generating Response for value ==> ' : %d }", index));
+    LOG.info(() -> String.format("{ 'verifyAddressWithIssuingBank() Generating Response for value ==> ' : %d }", index));
     return index;
   }
 
   public FraudStatus verifyTransactionAuthenticity(@NotNull @Valid CreditCard card,
                                                    @NotNull @Valid Money charge) throws InterruptedException {
-    return new FraudStatus(verifyCVV(card), verifyAddressWithCardIssuingBank(card), card.isValid());
+    return new FraudStatus(verifyCVV(card), verifyAddressWithIssuingBank(card), card.isValid());
   }
 }

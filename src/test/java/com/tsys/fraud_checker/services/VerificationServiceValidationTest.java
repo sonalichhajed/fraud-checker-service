@@ -41,7 +41,11 @@ public class VerificationServiceValidationTest {
 
   @Test
   public void isValid() throws InterruptedException {
-    given(random.nextInt(anyInt())).willReturn(0);
+    given(random.nextInt(anyInt()))
+            .willReturn(-2000) // for sleepMillis
+            .willReturn(0) // for CVV status PASS
+            .willReturn(0); // for AddressVerification status PASS
+
     final var fraudStatus = service.verifyTransactionAuthenticity(validCard, chargedAmount);
     assertThat(fraudStatus).isNotNull();
   }

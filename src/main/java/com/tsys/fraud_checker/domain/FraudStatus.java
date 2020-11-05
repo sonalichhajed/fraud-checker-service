@@ -41,20 +41,12 @@ public class FraudStatus {
 
   public static final String PASS = "pass";
   public static final String FAIL = "fail";
-  public static final String CVV_PASS = PASS;
-  public static final String CVV_FAIL = FAIL;
-
-  public static final String EXPIRATION_CHECK_PASS = PASS;
-  public static final String EXPIRATION_CHECK_FAIL = FAIL;
+  public static final String SUSPICIOUS = "suspicious";
 
   public static final String ADDRESS_VERIFICATION_IA = "incorrect address";
-  public static final String ADDRESS_VERIFICATION_PASS = PASS;
-  public static final String OUTCOME_SUSPICIOUS = "suspicious";
-  private static final String OUTCOME_FAIL = FAIL;
-  private static final String OUTCOME_PASS = PASS;
 
-  private String[] cvvStatuses = new String[]{CVV_PASS, CVV_FAIL};
-  private String[] avStatuses = new String[]{OUTCOME_PASS, ADDRESS_VERIFICATION_IA};
+  private String[] cvvStatuses = new String[]{PASS, FAIL};
+  private String[] avStatuses = new String[]{PASS, ADDRESS_VERIFICATION_IA};
 
   public final String cvvStatus;
   public final String avStatus;
@@ -67,13 +59,13 @@ public class FraudStatus {
   }
 
   private String computeOverallStatus(String cvvStatus, String avStatus, boolean isExpired) {
-    if (isExpired || cvvStatus.equals(CVV_FAIL))
-      return OUTCOME_FAIL;
+    if (isExpired || cvvStatus.equals(FAIL))
+      return FAIL;
 
-    if (avStatus.equals(ADDRESS_VERIFICATION_IA) && cvvStatus.equals(OUTCOME_PASS))
-      return OUTCOME_SUSPICIOUS;
+    if (avStatus.equals(ADDRESS_VERIFICATION_IA) && cvvStatus.equals(PASS))
+      return SUSPICIOUS;
 
-    return OUTCOME_PASS;
+    return PASS;
   }
 
   @Override
