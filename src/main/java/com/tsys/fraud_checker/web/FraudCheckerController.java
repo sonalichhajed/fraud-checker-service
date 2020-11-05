@@ -8,15 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -74,15 +69,15 @@ public class FraudCheckerController {
      * Use @Valid on Complex Types
      * If the Input class contains a field with another complex type that
      * should be validated, this field, too, needs to be annotated with
-     * @Valid.
+     * Valid.
      *
      */
     @PostMapping(value = "check", consumes = "application/json", produces = "application/json")
     public ResponseEntity<FraudStatus> checkFraud(
             @RequestBody @Valid FraudCheckPayload payload) {
         try {
-            LOG.info(() -> String.format("{ 'checkFraud' : ' for chargedAmount %s on %s'}", payload.chargedAmount, payload.creditCard));
-            FraudStatus fraudStatus = verificationService.verifyTransactionAuthenticity(payload.creditCard, payload.chargedAmount);
+            LOG.info(() -> String.format("{ 'checkFraud' : ' for chargedAmount %s on %s'}", payload.charge, payload.creditCard));
+            FraudStatus fraudStatus = verificationService.verifyTransactionAuthenticity(payload.creditCard, payload.charge);
             LOG.info(() -> String.format("{ 'FraudStatus' : '%s'}", fraudStatus));
             final var httpHeaders = new HttpHeaders() {{
                 setContentType(MediaType.APPLICATION_JSON);
@@ -91,7 +86,7 @@ public class FraudCheckerController {
             return new ResponseEntity<>(fraudStatus, httpHeaders, HttpStatus.OK);
 //            return ResponseEntity.ok(fraudStatus);
         } catch (InterruptedException e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

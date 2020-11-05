@@ -12,6 +12,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class NumberOfDigitsValidatorTest {
 
@@ -40,13 +41,24 @@ public class NumberOfDigitsValidatorTest {
   }
 
   @Test
-  public void invalidObjectFailsWithCustomMessage() throws Exception {
+  public void validationFailsWithCustomMessage() throws Exception {
     Set<ConstraintViolation<TestObject>> constraintViolations =
             validator.validate(invalidObject);
     final var constraintViolation = constraintViolations.stream()
             .findFirst()
             .orElseThrow(() -> new Exception("No constraint violation on invalid object has been raised!"));
     assertThat(constraintViolation.getMessage(), is("Must be 4 digits"));
+  }
+
+  @Test
+  public void shoutsWhenObjectIsNotPresent() {
+    assertThrows(IllegalArgumentException.class, () -> validator.validate(null));
+  }
+
+  @Test
+  public void doesNotValidateAnyObjectNotPresent() {
+    final var numberOfDigitsValidator = new NumberOfDigitsValidator();
+    assertThat(numberOfDigitsValidator.isValid(null, null), is(false));
   }
 
   class TestObject {

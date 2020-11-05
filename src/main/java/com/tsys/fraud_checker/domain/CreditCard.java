@@ -1,5 +1,6 @@
 package com.tsys.fraud_checker.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tsys.fraud_checker.spring.validators.NumberOfDigits;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Length;
@@ -42,6 +43,19 @@ public class CreditCard {
     this.cvv = cvv;
   }
 
+  /**
+   * JSON parse error: (was java.lang.NullPointerException);
+   * nested exception is com.fasterxml.jackson.databind.JsonMappingException: (was java.lang.NullPointerException)
+   * (through reference chain: com.tsys.fraud_checker.web.FraudCheckPayload["creditCard"]->com.tsys.fraud_checker.domain.CreditCard["valid"])
+   *
+   * Solution for com.fasterxml.jackson.databind.JsonMappingException:
+   * By default jackson tries to serialize the class as well as all the
+   * fields of the class, so you could have got the null pointer exception.
+   *
+   * Add @JsonIgnore to your getter method, in our case, the getter is
+   * isValid() method
+   */
+  @JsonIgnore
   public boolean isValid() {
     return validUntil.after(new Date());
   }

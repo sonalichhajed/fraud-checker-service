@@ -2,6 +2,8 @@ package com.tsys.fraud_checker.domain;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -11,11 +13,12 @@ public class CreditCardBuilder {
   private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
   private final Random random = new Random(87654321L);
 
-  private Optional<Boolean> isExpiryDateInFuture = Optional.empty();
+  private Boolean isExpiryDateInFuture = null;
   private String issuingBankName;
   private String holderName;
   private String number;
   private Integer cvv;
+  private Date validUntil;
 
   private CreditCardBuilder() {
   }
@@ -40,12 +43,12 @@ public class CreditCardBuilder {
   }
 
   public CreditCardBuilder withFutureExpiryDate() {
-    this.isExpiryDateInFuture = Optional.of(true);
+    this.isExpiryDateInFuture = true;
     return this;
   }
 
   public CreditCardBuilder withPastExpiryDate() {
-    this.isExpiryDateInFuture = Optional.of(false);
+    this.isExpiryDateInFuture = false;
     return this;
   }
 
@@ -72,21 +75,30 @@ public class CreditCardBuilder {
   public CreditCardBuilder havingCVVDigits(int howMany) {
     this.cvv = Integer.parseInt(Stream.generate(() -> random.nextInt(8) + 1)
             .limit(howMany)
-            .map(x -> String.valueOf(x))
+            .map(String::valueOf)
             .collect(Collectors.joining()));
     return this;
   }
 
+  public CreditCardBuilder withExpiryDate(String date) {
+    try {
+      validUntil = sdf.parse(date);
+    } catch (ParseException e) {
+      validUntil = null;
+    }
+    return this;
+  }
+
   public CreditCard build() {
-    return isExpiryDateInFuture
-            .map(value -> {
+    return Optional.ofNullable(isExpiryDateInFuture)
+            .map(isFutureDate -> {
               try {
-                return value ? sdf.parse("30-DEC-4000") : sdf.parse("30-DEC-2000");
+                return isFutureDate ? sdf.parse("30-DEC-4000") : Date.from(Instant.EPOCH);
               } catch (ParseException e) {
                 return null;
               }
             })
-            .map(validUntil -> new CreditCard(number, holderName, issuingBankName, validUntil, cvv))
-            .orElse(new CreditCard(number, holderName, issuingBankName, null, cvv));
+            .map(expiryDate -> new CreditCard(number, holderName, issuingBankName, expiryDate, cvv))
+            .orElse(new CreditCard(number, holderName, issuingBankName, validUntil, cvv));
   }
 }

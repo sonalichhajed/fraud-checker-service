@@ -2,6 +2,8 @@ package com.tsys.fraud_checker.spring.validators;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -24,6 +26,9 @@ public class NumberOfDigitsValidator implements ConstraintValidator<NumberOfDigi
 
   @Override
   public boolean isValid(Number num, ConstraintValidatorContext context) {
+    if (num == null)
+      return false;
+
     var number = num.longValue();
     int count = 0;
     while(number != 0) {

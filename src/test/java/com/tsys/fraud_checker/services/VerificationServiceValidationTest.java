@@ -3,7 +3,6 @@ package com.tsys.fraud_checker.services;
 import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.CreditCardBuilder;
 import com.tsys.fraud_checker.domain.Money;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.validation.ValidationException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.Random;
 
@@ -50,21 +47,17 @@ public class VerificationServiceValidationTest {
   }
 
   @Test
-  public void shoutsWhenCreditCardIsNotPresent() {
-    assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(null, chargedAmount);
-    });
+  public void shoutsWhenCardIsNotPresent() {
+    assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(null, chargedAmount));
   }
 
   @Test
   public void shoutsWhenAmountIsNotPresent() {
-    assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(null, null);
-    });
+    assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(null, null));
   }
 
   @Test
-  public void shoutsWhenCreditCardNumberIsAbsent() {
+  public void shoutsWhenCardNumberIsAbsent() {
     CreditCard cardWithoutNumber = CreditCardBuilder.make()
             .withHolder("Card Holder")
             .withIssuingBank("Bank")
@@ -72,14 +65,12 @@ public class VerificationServiceValidationTest {
             .withValidCVV()
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWithoutNumber, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.creditCard.number: Card number is required");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutNumber, chargedAmount));
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.number: Card number is required");
   }
 
   @Test
-  public void shoutsWhenCreditCardNumberIsEmpty() {
+  public void shoutsWhenCardNumberIsEmpty() {
     CreditCard cardWithoutNumber = CreditCardBuilder.make()
             .withHolder("Card Holder")
             .withIssuingBank("Bank")
@@ -88,17 +79,15 @@ public class VerificationServiceValidationTest {
             .withValidCVV()
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWithoutNumber, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.creditCard.number: Card number is required");
-    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.creditCard.number: Invalid Credit Card Number");
-    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.creditCard.number: Failed Luhn check!");
-    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.creditCard.number: length must be between 16 and 19");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutNumber, chargedAmount));
+    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.card.number: Card number is required");
+    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.card.number: Invalid Credit Card Number");
+    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.card.number: Failed Luhn check!");
+    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.card.number: length must be between 16 and 19");
   }
 
   @Test
-  public void shoutsWhenCreditCardHolderIsAbsent() {
+  public void shoutsWhenCardHolderIsAbsent() {
     CreditCard cardWithoutHolder = CreditCardBuilder.make()
             .withValidNumber()
             .withIssuingBank("Bank")
@@ -106,14 +95,12 @@ public class VerificationServiceValidationTest {
             .withValidCVV()
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWithoutHolder, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.creditCard.holderName: is required");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutHolder, chargedAmount));
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.holderName: is required");
   }
 
   @Test
-  public void shoutsWhenCreditCardHolderIsEmpty() {
+  public void shoutsWhenCardHolderIsEmpty() {
     CreditCard cardWithEmptyHolder = CreditCardBuilder.make()
             .withHolder("")
             .withValidNumber()
@@ -122,14 +109,12 @@ public class VerificationServiceValidationTest {
             .withValidCVV()
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWithEmptyHolder, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.creditCard.holderName: is required");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithEmptyHolder, chargedAmount));
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.holderName: is required");
   }
 
   @Test
-  public void shoutsWhenCreditCardIssuingBankIsAbsent() {
+  public void shoutsWhenCardIssuingBankIsAbsent() {
     CreditCard cardWithoutBank = CreditCardBuilder.make()
             .withHolder("Card Without Bank")
             .withValidNumber()
@@ -137,14 +122,12 @@ public class VerificationServiceValidationTest {
             .withValidCVV()
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWithoutBank, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.creditCard.issuingBank: name is required");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutBank, chargedAmount));
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.issuingBank: name is required");
   }
 
   @Test
-  public void shoutsWhenCreditCardIssuingBankIsEmpty() {
+  public void shoutsWhenCardIssuingBankIsEmpty() {
     CreditCard cardEmptyBank = CreditCardBuilder.make()
             .withHolder("Card Without Bank")
             .withIssuingBank("")
@@ -153,14 +136,12 @@ public class VerificationServiceValidationTest {
             .withValidCVV()
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardEmptyBank, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.creditCard.issuingBank: name is required");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardEmptyBank, chargedAmount));
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.issuingBank: name is required");
   }
 
   @Test
-  public void shoutsWhenCreditCardExpiryDateIsAbsent() {
+  public void shoutsWhenCardExpiryDateIsAbsent() {
     CreditCard cardWithoutExpiryDate = CreditCardBuilder.make()
             .withHolder("Card Without Expiry Date")
             .withIssuingBank(" Bank")
@@ -168,14 +149,12 @@ public class VerificationServiceValidationTest {
             .withValidCVV()
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWithoutExpiryDate, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.creditCard.validUntil: Expiry Date is mandatory!");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutExpiryDate, chargedAmount));
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.validUntil: Expiry Date is mandatory!");
   }
 
   @Test
-  public void shoutsWhenCreditCardCVVIsNotPresent() {
+  public void shoutsWhenCardCVVIsNotPresent() {
     CreditCard cardWithoutCVV = CreditCardBuilder.make()
             .withHolder("Card Without CVV")
             .withIssuingBank("Bank")
@@ -183,13 +162,11 @@ public class VerificationServiceValidationTest {
             .withFutureExpiryDate()
             .build();
 
-    assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWithoutCVV, chargedAmount);
-    });
+    assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutCVV, chargedAmount));
   }
 
   @Test
-  public void shoutsWhenCreditCardCVVDoesNotContain3Digits() {
+  public void shoutsWhenCardCVVDoesNotContain3Digits() {
     CreditCard cardWith2DigitCVV = CreditCardBuilder.make()
             .withHolder("Card With 2 Digit CVV")
             .withIssuingBank("Bank")
@@ -198,28 +175,21 @@ public class VerificationServiceValidationTest {
             .havingCVVDigits(2)
             .build();
 
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(cardWith2DigitCVV, chargedAmount);
-    });
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.creditCard.cvv: must have 3 digits");
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWith2DigitCVV, chargedAmount));
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.card.cvv: must have 3 digits");
   }
 
   @Test
   public void shoutsWhenAmountValueIsNotPresentInCharge() {
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(validCard, new Money(Currency.getInstance("INR"), null));
-    });
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(validCard, new Money(Currency.getInstance("INR"), null)));
 
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.charged.amount: is required!");
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.charge.amount: is required!");
   }
 
   @Test
   public void shoutsWhenCurrencyIsNotPresentInCharge() {
-    Throwable validationException = assertThrows(ValidationException.class, () -> {
-      service.verifyTransactionAuthenticity(validCard, new Money(null, 123.45d));
-    });
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(validCard, new Money(null, 123.45d)));
 
-    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.charged.currency: is required!");
+    assertThat(validationException.getMessage()).isEqualTo("verifyTransactionAuthenticity.charge.currency: is required!");
   }
-
 }

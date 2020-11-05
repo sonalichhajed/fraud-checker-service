@@ -4,7 +4,6 @@ import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.domain.Money;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,7 +41,6 @@ import java.util.logging.Logger;
 @Validated
 public class VerificationService {
 
-
   private static final Logger LOG = Logger.getLogger(VerificationService.class.getName());
 
   private Random random;
@@ -71,8 +69,8 @@ public class VerificationService {
     return index;
   }
 
-  public FraudStatus verifyTransactionAuthenticity(@NotNull @Valid CreditCard creditCard,
-                                                   @NotNull @Valid Money charged) throws InterruptedException {
-    return new FraudStatus(verifyCVV(creditCard), verifyAddressWithCardIssuingBank(creditCard), creditCard.isValid());
+  public FraudStatus verifyTransactionAuthenticity(@NotNull @Valid CreditCard card,
+                                                   @NotNull @Valid Money charge) throws InterruptedException {
+    return new FraudStatus(verifyCVV(card), verifyAddressWithCardIssuingBank(card), card.isValid());
   }
 }

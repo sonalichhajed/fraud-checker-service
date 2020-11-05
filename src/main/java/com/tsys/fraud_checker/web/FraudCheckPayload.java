@@ -6,21 +6,31 @@ import com.tsys.fraud_checker.domain.Money;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+/**
+ * NOTE: Use @Valid on Complex Types
+ * If the Input class contains a field with another complex type that
+ * should be validated, this field, too, needs to be annotated with
+ * Valid.
+ *
+ * For example - In our case, we need to annotate CreditCard and Money
+ * fields with Valid annotation.
+ */
 public class FraudCheckPayload {
-//  @Valid
+  @Valid
   @NotNull(message = "Require Credit Card Details!")
   public final CreditCard creditCard;
 
-//  @Valid
-  @NotNull(message = "Charged amount must be supplied!")
-  public final Money chargedAmount;
+  @Valid
+  @NotNull(message = "amount must be supplied!")
+  public final Money charge;
 
+  @Deprecated
   public FraudCheckPayload() {
     this(null, null);
   }
 
-  public FraudCheckPayload(CreditCard creditCard, Money chargedAmount) {
+  public FraudCheckPayload(CreditCard creditCard, Money charge) {
     this.creditCard = creditCard;
-    this.chargedAmount = chargedAmount;
+    this.charge = charge;
   }
 }
