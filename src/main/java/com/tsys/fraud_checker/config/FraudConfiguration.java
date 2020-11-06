@@ -5,9 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.util.Collections;
 import java.util.Random;
 
 @Configuration
@@ -38,7 +41,17 @@ public class FraudConfiguration {
             // API available through Swagger.
             .apis(RequestHandlerSelectors.any())
             .paths(PathSelectors.any())
-            .build();
+            .build()
+            .apiInfo(apiInfo());
   }
 
+  private ApiInfo apiInfo() {
+    return new ApiInfo(
+            "FraudChecker REST API",
+            "Checks for Credit Card Frauds.",
+            "API v1.0",
+            "https://www.gnu.org/licenses/gpl-3.0.html",
+            new Contact("Dhaval Dalal", "https://dhavaldalal.wordpress.com", "dhaval@dalal.com"),
+            "Copyleft License", "https://en.wikipedia.org/wiki/Copyleft", Collections.emptyList());
+  }
 }
