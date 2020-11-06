@@ -71,6 +71,6 @@ public class VerificationService {
 
   public FraudStatus verifyTransactionAuthenticity(@NotNull @Valid CreditCard card,
                                                    @NotNull @Valid Money charge) throws InterruptedException {
-    return new FraudStatus(verifyCVV(card), verifyAddressWithIssuingBank(card), card.isValid());
+    return new FraudStatus(verifyCVV(card), verifyAddressWithIssuingBank(card), card.hasExpired());
   }
 }

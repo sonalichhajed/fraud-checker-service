@@ -2,9 +2,6 @@ package com.tsys.fraud_checker.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreditCardTest {
@@ -15,7 +12,7 @@ public class CreditCardTest {
                     .withFutureExpiryDate()
                     .build();
 
-    assertThat(creditCard.isValid()).isTrue();
+    assertThat(creditCard.hasExpired()).isTrue();
   }
 
   @Test
@@ -24,6 +21,6 @@ public class CreditCardTest {
             .withPastExpiryDate()
             .build();
 
-    assertThat(creditCard.isValid()).isFalse();
+    assertThat(creditCard.hasExpired()).isFalse();
   }
 }

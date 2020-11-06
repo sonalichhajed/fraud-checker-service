@@ -54,10 +54,10 @@ public class CreditCard {
    * fields of the class, so you could have got the null pointer exception.
    *
    * Add @JsonIgnore to your getter method, in our case, the getter is
-   * isValid() method
+   * hasExpired() method
    */
   @JsonIgnore
-  public boolean isValid() {
+  public boolean hasExpired() {
     return validUntil.after(new Date());
   }
 

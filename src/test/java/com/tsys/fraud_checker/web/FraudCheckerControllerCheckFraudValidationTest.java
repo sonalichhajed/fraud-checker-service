@@ -60,7 +60,7 @@ public class FraudCheckerControllerCheckFraudValidationTest {
   @Test
   public void chargingAValidCard() throws Exception {
     final var request = givenAFraudCheckRequestFor(validCard, charge);
-    FraudStatus ignoreSuccess = new FraudStatus(0, 0, validCard.isValid());
+    FraudStatus ignoreSuccess = new FraudStatus(0, 0, validCard.hasExpired());
     given(verificationService.verifyTransactionAuthenticity(validCard, charge))
             .willReturn(ignoreSuccess);
 
