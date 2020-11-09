@@ -2,6 +2,7 @@ package com.tsys.fraud_checker.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tsys.fraud_checker.spring.validators.NumberOfDigits;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.LuhnCheck;
@@ -12,6 +13,12 @@ import java.util.Date;
 
 public class CreditCard {
 
+  @ApiModelProperty(
+          value = "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
+          name = "number",
+          dataType = "String",
+          required = true,
+          example = "4485-2847-2013-4093")
   @NotBlank(message = "Card number is required")
   @Length(min = 16, max = 19)
   @CreditCardNumber(ignoreNonDigitCharacters = true, message = "Invalid Credit Card Number")
@@ -27,6 +34,14 @@ public class CreditCard {
   @NotNull(message = "Expiry Date is mandatory!")
   public final Date validUntil;
 
+  //  The @ApiParam annotation is for the parameters of an API resource request,
+  //  whereas @ApiModelProperty is for properties of the model.
+  @ApiModelProperty(
+          value = "Card Verification Value - Must be 3 digits",
+          name = "cvv",
+          dataType = "integer",
+          required = true,
+          example = "123")
   @NotNull(message = "is mandatory!")
   @NumberOfDigits(value = 3, message = "must have 3 digits")
   public final Integer cvv;

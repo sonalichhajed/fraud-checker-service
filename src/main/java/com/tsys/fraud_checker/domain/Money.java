@@ -1,9 +1,19 @@
 package com.tsys.fraud_checker.domain;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotNull;
 import java.util.Currency;
 
 public class Money {
+  //  The @ApiParam annotation is for the parameters of an API resource request,
+  //  whereas @ApiModelProperty is for properties of the model.
+  @ApiModelProperty(
+          value = "Currency of the transaction",
+          name = "currency",
+          dataType = "string",
+          required = true,
+          example = "INR")
   @NotNull(message = "is required!")
   public final Currency currency;
 

@@ -2,6 +2,8 @@ package com.tsys.fraud_checker.web;
 
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.services.VerificationService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -59,15 +61,41 @@ public class FraudCheckerController {
         this.verificationService = verificationService;
     }
 
+    @ApiOperation(value = "Show index page.")
     @RequestMapping
     public String index() {
         return "index.html";
     }
 
+    @ApiOperation(value = "Am I alive?")
     @GetMapping("ping")
     @ResponseBody
     public ResponseEntity<String> pong() {
         return ResponseEntity.ok(String.format("{ 'PONG' : '%s is running fine!' }", FraudCheckerController.class.getSimpleName()));
+    }
+    // The @ApiParam annotation is for the parameters of an API resource request,
+    //  whereas @ApiModelProperty is for properties of the model.
+    @GetMapping("validatePathVariable/{id}")
+    ResponseEntity<String> validatePathVariable(
+            @PathVariable("id")
+            @Min(value = 5, message = "A minimum value of 5 is required")
+            @ApiParam(
+                    name =  "id",
+                    type = "int",
+                    value = "a number",
+                    example = "1",
+                    required = true)
+                    int id) {
+        LOG.info(() -> String.format("validatePathVariable(), Got id = %d", id));
+        return ResponseEntity.ok("valid");
+    }
+
+    @GetMapping("validateRequestParameter")
+    ResponseEntity<String> validateRequestParameter(
+            @RequestParam("param")
+            @Min(5) int param) {
+        LOG.info(() -> String.format("validateRequestParameter(), Got param = %d", param));
+        return ResponseEntity.ok("valid");
     }
 
     /**
@@ -92,6 +120,7 @@ public class FraudCheckerController {
      * Valid.
      *
      */
+    @ApiOperation(value = "Check possibility of a fradulent transaction and return a status to the caller.")
     @PostMapping(value = "check", consumes = "application/json", produces = "application/json")
     public ResponseEntity<FraudStatus> checkFraud(
             @RequestBody @Valid FraudCheckPayload payload) {
@@ -108,21 +137,5 @@ public class FraudCheckerController {
         } catch (InterruptedException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @GetMapping("validatePathVariable/{id}")
-    ResponseEntity<String> validatePathVariable(
-            @PathVariable("id")
-            @Min(5) int id) {
-        LOG.info(() -> String.format("validatePathVariable(), Got id = %d", id));
-        return ResponseEntity.ok("valid");
-    }
-
-    @GetMapping("validateRequestParameter")
-    ResponseEntity<String> validateRequestParameter(
-            @RequestParam("param")
-            @Min(5) int param) {
-        LOG.info(() -> String.format("validateRequestParameter(), Got param = %d", param));
-        return ResponseEntity.ok("valid");
     }
 }

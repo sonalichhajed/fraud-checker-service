@@ -52,7 +52,7 @@ public class FraudCheckerControllerGetMappingsValidationTest {
             "    \"validationErrors\": [\n" +
             "        {\n" +
             "            \"fieldName\": \"validatePathVariable.id\",\n" +
-            "            \"message\": \"must be greater than or equal to 5\"\n" +
+            "            \"message\": \"A minimum value of 5 is required\"\n" +
             "        }\n" +
             "    ]\n" +
             "}";
