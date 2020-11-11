@@ -91,6 +91,35 @@ public class VerificationServiceValidationTest {
   }
 
   @Test
+  public void shoutsWhenCardNumberIsInvalid() throws Exception {
+    var cardWithoutNumber = CreditCardBuilder.make()
+            .withInvalidNumber()
+            .withHolder("Card Holder")
+            .withIssuingBank("Bank")
+            .withFutureExpiryDate()
+            .withValidCVV()
+            .build();
+
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutNumber, chargedAmount));
+    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.card.number: Invalid Credit Card Number");
+    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.card.number: Failed Luhn check!");
+  }
+
+  @Test
+  public void shoutsWhenCardNumberIsOfInsufficientLength() throws Exception {
+    var cardWithoutNumber = CreditCardBuilder.make()
+            .withNumber("4992 7398 716")
+            .withHolder("Card Holder")
+            .withIssuingBank("Bank")
+            .withFutureExpiryDate()
+            .withValidCVV()
+            .build();
+
+    Throwable validationException = assertThrows(ValidationException.class, () -> service.verifyTransactionAuthenticity(cardWithoutNumber, chargedAmount));
+    assertThat(validationException.getMessage()).contains("verifyTransactionAuthenticity.card.number: length must be between 16 and 19");
+  }
+
+  @Test
   public void shoutsWhenCardHolderIsAbsent() {
     CreditCard cardWithoutHolder = CreditCardBuilder.make()
             .withValidNumber()

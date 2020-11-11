@@ -174,6 +174,65 @@ public class FraudCheckerControllerCheckFraudValidationTest {
   }
 
   @Test
+  public void shoutsWhenCardNumberIsInvalid() throws Exception {
+    var cardWithoutNumber = CreditCardBuilder.make()
+            .withInvalidNumber()
+            .withHolder("Card Holder")
+            .withIssuingBank("Bank")
+            .withFutureExpiryDate()
+            .withValidCVV()
+            .build();
+
+    final var request = givenAFraudCheckRequestFor(cardWithoutNumber, charge);
+    final ResultActions resultActions = whenTheRequestIsMade(request);
+    final var response = "{\n" +
+            "    \"validationErrors\": [\n" +
+            "        {\n" +
+            "            \"fieldName\": \"creditCard.number\",\n" +
+            "            \"message\": \"Failed Luhn check!\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"fieldName\": \"creditCard.number\",\n" +
+            "            \"message\": \"Invalid Credit Card Number\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+    final var content = MockMvcResultMatchers.content();
+    thenExpect(resultActions,
+            MockMvcResultMatchers.status().isBadRequest(),
+            content.contentType(MediaType.APPLICATION_JSON),
+            content.json(response));
+  }
+
+  @Test
+  public void shoutsWhenCardNumberIsOfInsufficientLength() throws Exception {
+    var cardWithoutNumber = CreditCardBuilder.make()
+            .withNumber("4992 7398 716")
+            .withHolder("Card Holder")
+            .withIssuingBank("Bank")
+            .withFutureExpiryDate()
+            .withValidCVV()
+            .build();
+
+    final var request = givenAFraudCheckRequestFor(cardWithoutNumber, charge);
+    final ResultActions resultActions = whenTheRequestIsMade(request);
+    final var response = "{\n" +
+            "    \"validationErrors\": [\n" +
+            "        {\n" +
+            "            \"fieldName\": \"creditCard.number\",\n" +
+            "            \"message\": \"length must be between 16 and 19\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+
+    final var content = MockMvcResultMatchers.content();
+    thenExpect(resultActions,
+            MockMvcResultMatchers.status().isBadRequest(),
+            content.contentType(MediaType.APPLICATION_JSON),
+            content.json(response));
+  }
+
+  @Test
   public void shoutsWhenCardHolderIsAbsent() throws Exception {
     var cardWithoutHolder = CreditCardBuilder.make()
             .withValidNumber()
