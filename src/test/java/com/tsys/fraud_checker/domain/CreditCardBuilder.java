@@ -33,22 +33,22 @@ public class CreditCardBuilder {
   }
 
   public CreditCardBuilder withValidNumber() {
-    this.number = "4485-2847-2013-4093";
+    number = "4485-2847-2013-4093";
     return this;
   }
 
   public CreditCardBuilder withInvalidNumber() {
-    this.number = "1234 5678 9012 3456";
+    number = "1234 5678 9012 3456";
     return this;
   }
 
   public CreditCardBuilder withFutureExpiryDate() {
-    this.isExpiryDateInFuture = true;
+    isExpiryDateInFuture = true;
     return this;
   }
 
   public CreditCardBuilder withPastExpiryDate() {
-    this.isExpiryDateInFuture = false;
+    isExpiryDateInFuture = false;
     return this;
   }
 
@@ -73,13 +73,18 @@ public class CreditCardBuilder {
   }
 
   public CreditCardBuilder havingCVVDigits(int howMany) {
-    this.cvv = Integer.parseInt(Stream.generate(() -> random.nextInt(8) + 1)
+    cvv = Integer.parseInt(Stream.generate(() -> random.nextInt(8) + 1)
             .limit(howMany)
             .map(String::valueOf)
             .collect(Collectors.joining()));
     return this;
   }
 
+  /**
+   * Expiry date as String in the format dd-MM-yyyy
+   * @param date format dd-MM-yyyy
+   * @return CreditCardBuilder
+   */
   public CreditCardBuilder withExpiryDate(String date) {
     try {
       validUntil = sdf.parse(date);
