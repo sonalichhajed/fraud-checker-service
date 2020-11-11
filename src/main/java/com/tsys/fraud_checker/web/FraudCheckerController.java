@@ -133,7 +133,6 @@ public class FraudCheckerController {
             }};
 
             return new ResponseEntity<>(fraudStatus, httpHeaders, HttpStatus.OK);
-//            return ResponseEntity.ok(fraudStatus);
         } catch (InterruptedException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
