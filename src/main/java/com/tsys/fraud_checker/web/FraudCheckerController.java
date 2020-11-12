@@ -71,6 +71,10 @@ public class FraudCheckerController {
     }
 
     @ApiOperation(value = "Am I alive?", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Got Health status", response = String.class),
+//            @ApiResponse(code = 429, message = "Too Many Requests")
+    })
     @GetMapping(value = "ping", produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> pong() {

@@ -67,6 +67,9 @@
           "404": {
             "description": "Not Found"
           },
+          "429": {
+            "description": "Too Many Requests"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -82,7 +85,7 @@
         "operationId": "pongUsingGET",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Got Health status",
             "content": {
               "application/json": {
                 "schema": {
@@ -99,6 +102,9 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
           }
         }
       }
@@ -146,6 +152,9 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
           }
         }
       }
@@ -193,6 +202,9 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
           }
         }
       }

@@ -74,7 +74,7 @@ patterns and assess risk if any.
 1. Using Springfox, navigate to [http://localhost:9001/swagger-ui/index.html](http://localhost:9001/swagger-ui/index.html) and click on [http://localhost:9001/v3/api-docs](http://localhost:9001/v3/api-docs) to get the JSON version of the API docs 
 2. In order to generate the YAML version, go to [https://editor.swagger.io](https://editor.swagger.io) and paste the above JSON file.  Go to Edit | Convert to YAML and save the file in YAML format.
 3. Go to [https://platform.42crunch.com](https://platform.42crunch.com) and sign-up/sign-in
-4. Click Settings | Api Tokens | Create New Token - 9b2b7cf9-095f-4917-93c3-90f12d5e1006
+4. Click Settings | Api Tokens | Create New Token - <<your token>>
 5.  
 
 ### Reference Documentation
