@@ -11,12 +11,18 @@ public class Money {
   @ApiModelProperty(
           value = "Currency of the transaction",
           name = "currency",
-          dataType = "string",
+          dataType = "java.lang.String",
           required = true,
           example = "INR")
   @NotNull(message = "is required!")
   public final Currency currency;
 
+  @ApiModelProperty(
+          value = "Amount of the transaction",
+          name = "amount",
+          dataType = "java.lang.Double",
+          required = true,
+          example = "1234.56")
   @NotNull(message = "is required!")
   public final Double amount;
 

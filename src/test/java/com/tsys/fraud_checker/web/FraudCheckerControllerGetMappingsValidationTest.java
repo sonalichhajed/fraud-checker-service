@@ -37,7 +37,7 @@ public class FraudCheckerControllerGetMappingsValidationTest {
 
   @Test
   public void validatesPathVariableIdAtOrAboveValue5() throws Exception {
-    final var request = givenAFraudCheckRequestFor("/validatePathVariable/5");
+    final var request = givenARequestFor("/validatePathVariable/5");
     final ResultActions resultActions = whenTheRequestIsMade(request);
     thenExpect(resultActions,
             MockMvcResultMatchers.status().isOk(),
@@ -46,7 +46,7 @@ public class FraudCheckerControllerGetMappingsValidationTest {
 
   @Test
   public void shoutsWhenPathVariableIdIsBelow5() throws Exception {
-    final var request = givenAFraudCheckRequestFor("/validatePathVariable/4");
+    final var request = givenARequestFor("/validatePathVariable/4");
     final ResultActions resultActions = whenTheRequestIsMade(request);
     final var response = "{\n" +
             "    \"validationErrors\": [\n" +
@@ -64,8 +64,27 @@ public class FraudCheckerControllerGetMappingsValidationTest {
   }
 
   @Test
+  public void shoutsWhenPathVariableIdIsAbove9999() throws Exception {
+    final var request = givenARequestFor("/validatePathVariable/10000");
+    final ResultActions resultActions = whenTheRequestIsMade(request);
+    final var response = "{\n" +
+            "    \"validationErrors\": [\n" +
+            "        {\n" +
+            "            \"fieldName\": \"validatePathVariable.id\",\n" +
+            "            \"message\": \"A maximum value of 9999 can be given\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+    final var content = MockMvcResultMatchers.content();
+    thenExpect(resultActions,
+            MockMvcResultMatchers.status().isBadRequest(),
+            content.contentType(MediaType.APPLICATION_JSON),
+            content.json(response));
+  }
+
+  @Test
   public void validatesRequestParameterAtOrAboveValue5() throws Exception {
-    final var request = givenAFraudCheckRequestFor("/validateRequestParameter?param=5");
+    final var request = givenARequestFor("/validateRequestParameter?param=5");
     final ResultActions resultActions = whenTheRequestIsMade(request);
     thenExpect(resultActions,
             MockMvcResultMatchers.status().isOk(),
@@ -74,7 +93,7 @@ public class FraudCheckerControllerGetMappingsValidationTest {
 
   @Test
   public void shoutsWhenRequestParameterIsBelow5() throws Exception {
-    final var request = givenAFraudCheckRequestFor("/validateRequestParameter?param=4");
+    final var request = givenARequestFor("/validateRequestParameter?param=4");
     final ResultActions resultActions = whenTheRequestIsMade(request);
     final var response = "{\n" +
             "    \"validationErrors\": [\n" +
@@ -91,7 +110,26 @@ public class FraudCheckerControllerGetMappingsValidationTest {
             content.json(response));
   }
 
-  private MockHttpServletRequestBuilder givenAFraudCheckRequestFor(String url) {
+  @Test
+  public void shoutsWhenRequestParameterIsAbove9999() throws Exception {
+    final var request = givenARequestFor("/validateRequestParameter?param=10000");
+    final ResultActions resultActions = whenTheRequestIsMade(request);
+    final var response = "{\n" +
+            "    \"validationErrors\": [\n" +
+            "        {\n" +
+            "            \"fieldName\": \"validateRequestParameter.param\",\n" +
+            "            \"message\": \"must be less than or equal to 9999\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+    final var content = MockMvcResultMatchers.content();
+    thenExpect(resultActions,
+            MockMvcResultMatchers.status().isBadRequest(),
+            content.contentType(MediaType.APPLICATION_JSON),
+            content.json(response));
+  }
+
+  private MockHttpServletRequestBuilder givenARequestFor(String url) {
     return MockMvcRequestBuilders.get(url)
             .characterEncoding("UTF-8");
   }

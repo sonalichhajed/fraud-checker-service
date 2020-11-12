@@ -16,7 +16,7 @@ public class CreditCard {
   @ApiModelProperty(
           value = "Card Number - Must be between 16 and 19 digits.  It can contain non-digit characters like SPACE or a dash '-'",
           name = "number",
-          dataType = "String",
+          dataType = "java.lang.String",
           required = true,
           example = "4485-2847-2013-4093")
   @NotBlank(message = "Card number is required")
@@ -31,6 +31,11 @@ public class CreditCard {
   @NotBlank(message = "name is required")
   public final String issuingBank;
 
+  @ApiModelProperty(
+          value = "Expiry Date of the Card",
+          name = "validUntil",
+          dataType = "java.util.Date",
+          required = true)
   @NotNull(message = "Expiry Date is mandatory!")
   public final Date validUntil;
 
@@ -39,7 +44,7 @@ public class CreditCard {
   @ApiModelProperty(
           value = "Card Verification Value - Must be 3 digits",
           name = "cvv",
-          dataType = "integer",
+          dataType = "java.lang.Integer",
           required = true,
           example = "123")
   @NotNull(message = "is mandatory!")

@@ -1,6 +1,7 @@
 package com.tsys.fraud_checker.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -9,7 +10,12 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Collections;
+import java.util.Currency;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
+@Configuration
 public class SwaggerConfiguration {
   // After adding the dependency to build.gradle, add the Docket bean.
   // The configuration of Swagger is based on the Docket bean
@@ -20,7 +26,7 @@ public class SwaggerConfiguration {
   //    http://localhost:9001/swagger-ui/index.html
   @Bean
   public Docket api() {
-    return new Docket(DocumentationType.SWAGGER_2)
+    return new Docket(DocumentationType.OAS_30)
         // select() method returns an instance of ApiSelectorBuilder,
         // which provides a way to control the endpoints exposed by Swagger.
         .select()
@@ -30,9 +36,12 @@ public class SwaggerConfiguration {
         // Using any() for both will make documentation for our entire
         // API available through Swagger.
         .apis(RequestHandlerSelectors.any())
-        .paths(PathSelectors.any())
+        // Exclude Spring BasicErrorController from the path
+        .paths(Predicate.not(PathSelectors.regex("/error.*")))
         .build()
-        .apiInfo(apiInfo());
+        .apiInfo(apiInfo())
+        .produces(Set.of("application/json"))
+        .consumes(Set.of("application/json"));
   }
 
   private ApiInfo apiInfo() {

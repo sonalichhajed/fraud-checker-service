@@ -46,7 +46,7 @@ public class FraudCheckerControllerTest {
     final ResultActions resultActions = whenTheRequestIsMade(request);
     thenExpect(resultActions,
             MockMvcResultMatchers.status().isOk(),
-            MockMvcResultMatchers.content().bytes("{ 'PONG' : 'FraudCheckerController is running fine!' }".getBytes()));
+            MockMvcResultMatchers.content().bytes("{ \"PONG\" : \"FraudCheckerController is running fine!\" }".getBytes()));
   }
 
   @Test
