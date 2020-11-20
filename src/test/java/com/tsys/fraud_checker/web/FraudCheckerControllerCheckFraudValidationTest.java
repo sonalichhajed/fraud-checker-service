@@ -58,19 +58,6 @@ public class FraudCheckerControllerCheckFraudValidationTest {
           .build();
 
   @Test
-  public void chargingAValidCard() throws Exception {
-    final var request = givenAFraudCheckRequestFor(validCard, charge);
-    FraudStatus ignoreSuccess = new FraudStatus(0, 0, validCard.hasExpired());
-    given(verificationService.verifyTransactionAuthenticity(validCard, charge))
-            .willReturn(ignoreSuccess);
-
-    final ResultActions resultActions = whenTheRequestIsMade(request);
-    thenExpect(resultActions,
-            MockMvcResultMatchers.status().isOk(),
-            MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-  }
-
-  @Test
   public void shoutsWhenChargingWithoutAnyCreditCard() throws Exception {
     final var request = givenAFraudCheckRequestFor(null, charge);
     final ResultActions resultActions = whenTheRequestIsMade(request);

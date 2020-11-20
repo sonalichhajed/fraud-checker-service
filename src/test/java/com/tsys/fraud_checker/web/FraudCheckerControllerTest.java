@@ -1,6 +1,7 @@
 package com.tsys.fraud_checker.web;
 
 import com.tsys.fraud_checker.domain.CreditCard;
+import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.domain.Money;
 import com.tsys.fraud_checker.services.VerificationService;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,33 @@ public class FraudCheckerControllerTest {
     final ResultActions resultActions = whenTheRequestIsMade(request);
     thenExpect(resultActions,
             MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  public void chargingAValidCard() throws Exception {
+    final var request = givenRequestFor("/check", true)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\n" +
+                    "    \"creditCard\" : {\n" +
+                    "        \"number\": \"4485 2847 2013 4093\",\n" +
+                    "        \"holderName\" : \"Jumping Jack\",\n" +
+                    "        \"issuingBank\" : \"Bank of America\",\n" +
+                    "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
+                    "        \"cvv\" : 123\n" +
+                    "    },\n" +
+                    "    \"charge\" : {\n" +
+                    "        \"currency\" : \"INR\",\n" +
+                    "        \"amount\" : 1235.45\n" +
+                    "    }\n" +
+                    "}");
+    FraudStatus ignoreSuccess = new FraudStatus(0, 0, false);
+    given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
+            .willReturn(ignoreSuccess);
+
+    final ResultActions resultActions = whenTheRequestIsMade(request);
+    thenExpect(resultActions,
+            MockMvcResultMatchers.status().isOk(),
+            MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
   }
 
   @Test
