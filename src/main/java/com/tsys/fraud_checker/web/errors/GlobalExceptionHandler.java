@@ -45,15 +45,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ValidationErrorResponse onConstraintValidationException(
+    public ValidationErrorsResponse onConstraintValidationException(
             ConstraintViolationException e) {
-        var error = new ValidationErrorResponse();
+        var errors = new ValidationErrorsResponse();
         e.getConstraintViolations()
                 .stream()
                 .map(violation -> new ValidationError(violation.getPropertyPath().toString(),
                         violation.getMessage()))
-                .forEach(validationError ->  error.add(validationError));
-        return error;
+                .forEach(validationError ->  errors.add(validationError));
+        return errors;
     }
 
     /**
@@ -64,13 +64,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ValidationErrorResponse onMethodArgumentNotValidException(
+    public ValidationErrorsResponse onMethodArgumentNotValidException(
             MethodArgumentNotValidException e) {
-        var error = new ValidationErrorResponse();
+        var errors = new ValidationErrorsResponse();
         e.getBindingResult().getFieldErrors()
                 .stream()
                 .map(fieldError -> new ValidationError(fieldError.getField(), fieldError.getDefaultMessage()))
-                .forEach(validationError -> error.add(validationError));
-        return error;
+                .forEach(validationError -> errors.add(validationError));
+        return errors;
     }
 }

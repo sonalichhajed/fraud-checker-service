@@ -20,7 +20,7 @@ import java.util.List;
  * as well, we will also handle MethodArgumentNotValidExceptions:
  * @see GlobalExceptionHandler
  */
-public class ValidationErrorResponse {
+public class ValidationErrorsResponse {
     public final List<ValidationError> validationErrors = new ArrayList<>();
 
     public void add(ValidationError validationError) {

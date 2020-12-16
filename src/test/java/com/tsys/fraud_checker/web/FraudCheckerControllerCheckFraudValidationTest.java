@@ -43,7 +43,6 @@ import static org.mockito.BDDMockito.given;
 //
 // NOTE: No Web-Server is deployed
 @WebMvcTest(FraudCheckerController.class)
-@AutoConfigureMockMvc
 public class FraudCheckerControllerCheckFraudValidationTest {
 
   @MockBean
