@@ -13,6 +13,7 @@ import com.tsys.fraud_checker.services.VerificationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
@@ -51,7 +52,7 @@ import static org.mockito.BDDMockito.given;
 // NOTE: No Web-Server is deployed
 @WebMvcTest(FraudCheckerController.class)
 @AutoConfigureMockMvc
-// We verify the validation behavior with an integration test:
+@AutoConfigureJsonTesters
 public class FraudCheckerControllerUnitTest {
 
   @MockBean
@@ -59,6 +60,10 @@ public class FraudCheckerControllerUnitTest {
 
   @Autowired
   private MockMvc mockMvc;
+
+  @Autowired
+  private JacksonTester<FraudStatus> jsonFraudStatus;
+
 
   @Test
   public void health() throws Exception {
@@ -103,14 +108,8 @@ public class FraudCheckerControllerUnitTest {
     thenExpect(resultActions,
             MockMvcResultMatchers.status().isOk(),
             MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-            MockMvcResultMatchers.content().json(convertObjectToJsonString(ignoreSuccess))
+            MockMvcResultMatchers.content().json(jsonFraudStatus.write(ignoreSuccess).getJson())
     );
-  }
-
-  private String convertObjectToJsonString(Object value) throws JsonProcessingException {
-    ObjectMapper mapper = new ObjectMapper();
-    //Converting the Object to JSONString
-    return mapper.writeValueAsString(value);
   }
 
   @Test
