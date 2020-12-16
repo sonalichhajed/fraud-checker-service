@@ -29,14 +29,20 @@ import static org.mockito.BDDMockito.given;
 // For Junit4, use @RunWith
 // @RunWith(SpringRunner.class)
 // For Junit5, use @ExtendWith
+// SpringExtension.class provides a bridge between Spring Boot test features
+// and JUnit. Whenever we use any Spring Boot testing features in our JUnit
+// tests, this annotation will be required.
 @ExtendWith(SpringExtension.class)
 // We're only testing the web layer, we use the @WebMvcTest
 // annotation. It allows us to easily test requests and responses
 // using the set of static methods implemented by the
 // MockMvcRequestBuilders and MockMvcResultMatchers classes.
+// We verify the validation behavior by applying Validation Advice, it
+// is automatically available, because we are using @WebMvcTest annotation
+//
+// NOTE: No Web-Server is deployed
 @WebMvcTest(FraudCheckerController.class)
 @AutoConfigureMockMvc
-// We can verify the validation behavior with an integration test:
 public class FraudCheckerControllerCheckFraudValidationTest {
 
   @MockBean

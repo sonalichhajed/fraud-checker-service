@@ -1,6 +1,5 @@
 package com.tsys.fraud_checker.domain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.*;
 
-public class CreditCardNumberValidator {
+public class CreditCardNumberValidatorSpike {
   private String regex = "^(?:(?<visa>4[0-9]{12}(?:[0-9]{3})?)|" +
           "(?<mastercard>5[1-5][0-9]{14})|" +
           "(?<discover>6(?:011|5[0-9]{2})[0-9]{12})|" +
@@ -104,7 +103,7 @@ public class CreditCardNumberValidator {
             "49927398717",
             "1234567812345678");
 
-    CreditCardNumberValidator validator = new CreditCardNumberValidator();
+    var validator = new CreditCardNumberValidatorSpike();
     cards.stream()
             // Strip all hyphens and spaces
             .map(card -> card.replaceAll("[-| ]", ""))

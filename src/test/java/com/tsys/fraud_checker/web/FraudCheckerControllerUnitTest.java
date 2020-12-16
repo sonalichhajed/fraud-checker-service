@@ -1,5 +1,11 @@
 package com.tsys.fraud_checker.web;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonFactoryBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.domain.Money;
@@ -9,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,21 +32,35 @@ import static org.mockito.BDDMockito.given;
 // For Junit4, use @RunWith
 // @RunWith(SpringRunner.class)
 // For Junit5, use @ExtendWith
+// SpringExtension.class provides a bridge between Spring Boot test features
+// and JUnit. Whenever we use any Spring Boot testing features in our JUnit
+// tests, this annotation will be required.
 @ExtendWith(SpringExtension.class)
 // We're only testing the web layer, we use the @WebMvcTest
 // annotation. It allows us to easily test requests and responses
 // using the set of static methods implemented by the
 // MockMvcRequestBuilders and MockMvcResultMatchers classes.
+//
+// Using the @WebMvcTest Annotation we are loading Spring's
+// WebApplication Context and hence all Controller Advices and Filters
+// get automatically applied.
+//
+// We verify the validation behavior by applying Validation Advice, it
+// is automatically available, because we are using @WebMvcTest annotation.
+//
+// NOTE: No Web-Server is deployed
 @WebMvcTest(FraudCheckerController.class)
 @AutoConfigureMockMvc
 // We verify the validation behavior with an integration test:
-public class FraudCheckerControllerTest {
+public class FraudCheckerControllerUnitTest {
 
   @MockBean
   private VerificationService verificationService;
 
   @Autowired
   private MockMvc mockMvc;
+
+//  private JacksonTester<FraudStatus> jsonFraudStatus = JacksonTester.initFields(this, new ObjectMapper());
 
   @Test
   public void health() throws Exception {
@@ -75,6 +96,7 @@ public class FraudCheckerControllerTest {
                     "        \"amount\" : 1235.45\n" +
                     "    }\n" +
                     "}");
+
     FraudStatus ignoreSuccess = new FraudStatus(0, 0, false);
     given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
             .willReturn(ignoreSuccess);
@@ -82,7 +104,15 @@ public class FraudCheckerControllerTest {
     final ResultActions resultActions = whenTheRequestIsMade(request);
     thenExpect(resultActions,
             MockMvcResultMatchers.status().isOk(),
-            MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+            MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+            MockMvcResultMatchers.content().json(convertObjectToJsonString(ignoreSuccess))
+    );
+  }
+
+  private String convertObjectToJsonString(Object value) throws JsonProcessingException {
+    ObjectMapper mapper = new ObjectMapper();
+    //Converting the Object to JSONString
+    return mapper.writeValueAsString(value);
   }
 
   @Test
