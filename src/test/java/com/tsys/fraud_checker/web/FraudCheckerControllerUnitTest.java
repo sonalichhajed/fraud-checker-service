@@ -44,7 +44,6 @@ import static org.mockito.BDDMockito.given;
 //
 // NOTE: No Web-Server is deployed
 @WebMvcTest(FraudCheckerController.class)
-@AutoConfigureJsonTesters
 public class FraudCheckerControllerUnitTest {
 
   @MockBean
@@ -52,10 +51,6 @@ public class FraudCheckerControllerUnitTest {
 
   @Autowired
   private MockMvc mockMvc;
-
-  @Autowired
-  private JacksonTester<FraudStatus> fraudStatusJson;
-
 
   @Test
   public void health() throws Exception {
@@ -74,62 +69,6 @@ public class FraudCheckerControllerUnitTest {
             MockMvcResultMatchers.status().isOk());
   }
 
-  @Test
-  public void chargingAValidCard() throws Exception {
-    final var request = givenRequestFor("/check", true)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\n" +
-                    "    \"creditCard\" : {\n" +
-                    "        \"number\": \"4485 2847 2013 4093\",\n" +
-                    "        \"holderName\" : \"Jumping Jack\",\n" +
-                    "        \"issuingBank\" : \"Bank of America\",\n" +
-                    "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
-                    "        \"cvv\" : 123\n" +
-                    "    },\n" +
-                    "    \"charge\" : {\n" +
-                    "        \"currency\" : \"INR\",\n" +
-                    "        \"amount\" : 1235.45\n" +
-                    "    }\n" +
-                    "}");
-
-    FraudStatus ignoreSuccess = new FraudStatus(0, 0, false);
-    given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
-            .willReturn(ignoreSuccess);
-
-    final ResultActions resultActions = whenTheRequestIsMade(request);
-    thenExpect(resultActions,
-            MockMvcResultMatchers.status().isOk(),
-            MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-            MockMvcResultMatchers.content().json(fraudStatusJson.write(ignoreSuccess).getJson())
-    );
-  }
-
-  @Test
-  public void shoutsWhenThereIsAProblemWithCheckingCardFraud() throws Exception {
-    given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
-            .willThrow(new InterruptedException());
-
-    final var request = givenRequestFor("/check", true)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\n" +
-                    "    \"creditCard\" : {\n" +
-                    "        \"number\": \"4485-2847-2013-4093\",\n" +
-                    "        \"holderName\" : \"Jumping Jack\",\n" +
-                    "        \"issuingBank\" : \"Bank of America\",\n" +
-                    "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
-                    "        \"cvv\" : 123\n" +
-                    "    },\n" +
-                    "    \"charge\" : {\n" +
-                    "        \"currency\" : \"INR\",\n" +
-                    "        \"amount\" : 1235.45\n" +
-                    "    }\n" +
-                    "}");
-
-    final ResultActions resultActions = whenTheRequestIsMade(request);
-
-    thenExpect(resultActions,
-            MockMvcResultMatchers.status().isInternalServerError());
-  }
 
   private MockHttpServletRequestBuilder givenRequestFor(String url, boolean isPostRequest) {
     if (isPostRequest)

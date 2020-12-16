@@ -70,68 +70,6 @@ public class FraudCheckerControllerStandaloneUnitTest {
             MockMvcResultMatchers.status().isOk());
   }
 
-  @Test
-  public void chargingAValidCard() throws Exception {
-    final var request = givenRequestFor("/check", true)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\n" +
-                    "    \"creditCard\" : {\n" +
-                    "        \"number\": \"4485 2847 2013 4093\",\n" +
-                    "        \"holderName\" : \"Jumping Jack\",\n" +
-                    "        \"issuingBank\" : \"Bank of America\",\n" +
-                    "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
-                    "        \"cvv\" : 123\n" +
-                    "    },\n" +
-                    "    \"charge\" : {\n" +
-                    "        \"currency\" : \"INR\",\n" +
-                    "        \"amount\" : 1235.45\n" +
-                    "    }\n" +
-                    "}");
-    FraudStatus ignoreSuccess = new FraudStatus(0, 0, false);
-    given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
-            .willReturn(ignoreSuccess);
-
-    final ResultActions resultActions = whenTheRequestIsMade(request);
-    thenExpect(resultActions,
-            MockMvcResultMatchers.status().isOk(),
-            MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-            MockMvcResultMatchers.content().json(convertObjectToJsonString(ignoreSuccess))
-    );
-  }
-
-  private String convertObjectToJsonString(Object value) throws JsonProcessingException {
-    ObjectMapper mapper = new ObjectMapper();
-    //Converting the Object to JSONString
-    return mapper.writeValueAsString(value);
-  }
-
-  @Test
-  public void shoutsWhenThereIsAProblemWithCheckingCardFraud() throws Exception {
-    given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
-            .willThrow(new InterruptedException());
-
-    final var request = givenRequestFor("/check", true)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\n" +
-                    "    \"creditCard\" : {\n" +
-                    "        \"number\": \"4485-2847-2013-4093\",\n" +
-                    "        \"holderName\" : \"Jumping Jack\",\n" +
-                    "        \"issuingBank\" : \"Bank of America\",\n" +
-                    "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
-                    "        \"cvv\" : 123\n" +
-                    "    },\n" +
-                    "    \"charge\" : {\n" +
-                    "        \"currency\" : \"INR\",\n" +
-                    "        \"amount\" : 1235.45\n" +
-                    "    }\n" +
-                    "}");
-
-    final ResultActions resultActions = whenTheRequestIsMade(request);
-
-    thenExpect(resultActions,
-            MockMvcResultMatchers.status().isInternalServerError());
-  }
-
   private MockHttpServletRequestBuilder givenRequestFor(String url, boolean isPostRequest) {
     if (isPostRequest)
       return MockMvcRequestBuilders.post(url).characterEncoding("UTF-8");

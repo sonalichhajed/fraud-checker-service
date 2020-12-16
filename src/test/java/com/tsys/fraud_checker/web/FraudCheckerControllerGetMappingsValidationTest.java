@@ -37,7 +37,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 //
 // NOTE: No Web-Server is deployed
 @WebMvcTest(FraudCheckerController.class)
-@AutoConfigureMockMvc
 public class FraudCheckerControllerGetMappingsValidationTest {
 
   @MockBean

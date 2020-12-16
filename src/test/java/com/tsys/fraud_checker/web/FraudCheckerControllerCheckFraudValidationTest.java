@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Currency;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 // For Junit4, use @RunWith
@@ -62,6 +63,46 @@ public class FraudCheckerControllerCheckFraudValidationTest {
           .withValidCVV()
           .withFutureExpiryDate()
           .build();
+
+  @Test
+  public void chargingAValidCard() throws Exception {
+    final var request = givenAFraudCheckRequestFor(validCard, charge);
+    FraudStatus ignoreSuccess = new FraudStatus(0, 0, false);
+    given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
+            .willReturn(ignoreSuccess);
+
+    final ResultActions resultActions = whenTheRequestIsMade(request);
+    thenExpect(resultActions,
+            MockMvcResultMatchers.status().isOk(),
+            MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+            MockMvcResultMatchers.content().json(convertObjectToJson(ignoreSuccess))
+    );
+  }
+
+  @Test
+  public void shoutsWhenThereIsAProblemWithCheckingCardFraud() throws Exception {
+    given(verificationService.verifyTransactionAuthenticity(any(CreditCard.class), any(Money.class)))
+            .willThrow(new InterruptedException());
+
+    final var request = givenAFraudCheckRequestFor("{\n" +
+                    "    \"creditCard\" : {\n" +
+                    "        \"number\": \"4485-2847-2013-4093\",\n" +
+                    "        \"holderName\" : \"Jumping Jack\",\n" +
+                    "        \"issuingBank\" : \"Bank of America\",\n" +
+                    "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
+                    "        \"cvv\" : 123\n" +
+                    "    },\n" +
+                    "    \"charge\" : {\n" +
+                    "        \"currency\" : \"INR\",\n" +
+                    "        \"amount\" : 1235.45\n" +
+                    "    }\n" +
+                    "}");
+
+    final ResultActions resultActions = whenTheRequestIsMade(request);
+
+    thenExpect(resultActions,
+            MockMvcResultMatchers.status().isInternalServerError());
+  }
 
   @Test
   public void shoutsWhenChargingWithoutAnyCreditCard() throws Exception {
@@ -516,8 +557,12 @@ public class FraudCheckerControllerCheckFraudValidationTest {
 
   private MockHttpServletRequestBuilder givenAFraudCheckRequestFor(CreditCard card, Money charge) throws JsonProcessingException {
     var payload = new FraudCheckPayload(card, charge);
-    var requestBody = objectMapper.writeValueAsString(payload);
+    var requestBody = convertObjectToJson(payload);
     return givenAFraudCheckRequestFor(requestBody);
+  }
+
+  private String convertObjectToJson(Object payload) throws JsonProcessingException {
+    return objectMapper.writeValueAsString(payload);
   }
 
   private MockHttpServletRequestBuilder givenAFraudCheckRequestFor(String requestBody) {
