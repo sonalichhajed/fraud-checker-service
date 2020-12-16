@@ -60,8 +60,6 @@ public class FraudCheckerControllerUnitTest {
   @Autowired
   private MockMvc mockMvc;
 
-//  private JacksonTester<FraudStatus> jsonFraudStatus = JacksonTester.initFields(this, new ObjectMapper());
-
   @Test
   public void health() throws Exception {
     final var request = givenRequestFor("/ping", false);
