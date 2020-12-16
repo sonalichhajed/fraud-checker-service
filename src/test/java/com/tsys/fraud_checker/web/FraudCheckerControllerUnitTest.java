@@ -54,7 +54,7 @@ public class FraudCheckerControllerUnitTest {
   private MockMvc mockMvc;
 
   @Autowired
-  private JacksonTester<FraudStatus> jsonFraudStatus;
+  private JacksonTester<FraudStatus> fraudStatusJson;
 
 
   @Test
@@ -100,7 +100,7 @@ public class FraudCheckerControllerUnitTest {
     thenExpect(resultActions,
             MockMvcResultMatchers.status().isOk(),
             MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-            MockMvcResultMatchers.content().json(jsonFraudStatus.write(ignoreSuccess).getJson())
+            MockMvcResultMatchers.content().json(fraudStatusJson.write(ignoreSuccess).getJson())
     );
   }
 
