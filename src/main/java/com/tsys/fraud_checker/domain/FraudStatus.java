@@ -52,14 +52,14 @@ public class FraudStatus {
   public final String avStatus;
   public final String overall;
 
-  public FraudStatus(int cvvStatusCode, int avStatusCode, boolean isExpired) {
+  public FraudStatus(int cvvStatusCode, int avStatusCode, boolean hasCardExpired) {
     this.cvvStatus = cvvStatuses[cvvStatusCode];
     this.avStatus = avStatuses[avStatusCode];
-    this.overall = computeOverallStatus(cvvStatus, avStatus, isExpired);
+    this.overall = computeOverallStatus(cvvStatus, avStatus, hasCardExpired);
   }
 
-  private String computeOverallStatus(String cvvStatus, String avStatus, boolean isExpired) {
-    if (isExpired || cvvStatus.equals(FAIL))
+  private String computeOverallStatus(String cvvStatus, String avStatus, boolean hasCardExpired) {
+    if (hasCardExpired || cvvStatus.equals(FAIL))
       return FAIL;
 
     if (avStatus.equals(ADDRESS_VERIFICATION_IA) && cvvStatus.equals(PASS))

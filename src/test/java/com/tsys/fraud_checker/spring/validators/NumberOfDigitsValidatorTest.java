@@ -1,6 +1,7 @@
 package com.tsys.fraud_checker.spring.validators;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
@@ -14,6 +15,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("UnitTest")
 public class NumberOfDigitsValidatorTest {
 
   private static Validator validator;

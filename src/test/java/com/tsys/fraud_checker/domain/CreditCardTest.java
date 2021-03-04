@@ -1,9 +1,11 @@
 package com.tsys.fraud_checker.domain;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("UnitTest")
 public class CreditCardTest {
 
   @Test
@@ -12,7 +14,7 @@ public class CreditCardTest {
                     .withFutureExpiryDate()
                     .build();
 
-    assertThat(creditCard.hasExpired()).isTrue();
+    assertThat(creditCard.hasExpired()).isFalse();
   }
 
   @Test
@@ -21,6 +23,6 @@ public class CreditCardTest {
             .withPastExpiryDate()
             .build();
 
-    assertThat(creditCard.hasExpired()).isFalse();
+    assertThat(creditCard.hasExpired()).isTrue();
   }
 }

@@ -1,29 +1,27 @@
 package com.tsys.fraud_checker.web;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tsys.fraud_checker.config.FraudControllerAdvice;
 import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.CreditCardBuilder;
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.domain.Money;
 import com.tsys.fraud_checker.services.VerificationService;
-import com.tsys.fraud_checker.web.errors.GlobalExceptionHandler;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Currency;
 
@@ -31,24 +29,31 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 // For Junit4, use @RunWith
-// @RunWith(MockitoJUnitRunner.class)
+// @RunWith(SpringRunner.class)
 // For Junit5, use @ExtendWith
-@ExtendWith(MockitoExtension.class)
-// Here we are using MockMVC in standalone mode, hence not loading any context. 
+// SpringExtension.class provides a bridge between Spring Boot test features
+// and JUnit. Whenever we use any Spring Boot testing features in our JUnit
+// tests, this annotation will be required.
+@ExtendWith(SpringExtension.class)
+// We're only testing the web layer, we use the @WebMvcTest
+// annotation. It allows us to easily test requests and responses
+// using the set of static methods implemented by the
+// MockMvcRequestBuilders and MockMvcResultMatchers classes.
+// We verify the validation behavior by applying Validation Advice, it
+// is automatically available, because we are using @WebMvcTest annotation
 //
 // NOTE: No Web-Server is deployed
-public class FraudCheckerControllerCheckFraudStandaloneValidationTest {
+@WebMvcTest(FraudCheckerController.class)
+@Tag("UnitTest")
+public class FraudCheckerControllerCheckFraudValidationWebMvcTest {
 
-  @Mock
+  @MockBean
   private VerificationService verificationService;
 
-  // Annotate our FraudCheckerController instance with @InjectMocks. So, Mockito injects the
-  // mocked verificationService into the controller instead of the real bean instance.
-  @InjectMocks
-  private FraudCheckerController fraudCheckerController;
+  @Autowired
+  private ObjectMapper objectMapper;
 
-  private ObjectMapper objectMapper = new ObjectMapper(new JsonFactory());;
-
+  @Autowired
   private MockMvc mockMvc;
 
   private final Money charge = new Money(Currency.getInstance("INR"), 1235.45d);
@@ -59,16 +64,6 @@ public class FraudCheckerControllerCheckFraudStandaloneValidationTest {
           .withValidCVV()
           .withFutureExpiryDate()
           .build();
-
-  @BeforeEach
-  public void buildMockMvc(){
-    // MockMvc standalone approach
-    mockMvc = MockMvcBuilders.standaloneSetup(fraudCheckerController)
-            //  Add custom Advices and Filters manually and control each
-            .setControllerAdvice(new GlobalExceptionHandler(), new FraudControllerAdvice())
-            //       .addFilters(new FraudCheckerFilter())
-            .build();
-  }
 
   @Test
   public void chargingAValidCard() throws Exception {
@@ -91,18 +86,18 @@ public class FraudCheckerControllerCheckFraudStandaloneValidationTest {
             .willThrow(new InterruptedException());
 
     final var request = givenAFraudCheckRequestFor("{\n" +
-            "    \"creditCard\" : {\n" +
-            "        \"number\": \"4485-2847-2013-4093\",\n" +
-            "        \"holderName\" : \"Jumping Jack\",\n" +
-            "        \"issuingBank\" : \"Bank of America\",\n" +
-            "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
-            "        \"cvv\" : 123\n" +
-            "    },\n" +
-            "    \"charge\" : {\n" +
-            "        \"currency\" : \"INR\",\n" +
-            "        \"amount\" : 1235.45\n" +
-            "    }\n" +
-            "}");
+                    "    \"creditCard\" : {\n" +
+                    "        \"number\": \"4485-2847-2013-4093\",\n" +
+                    "        \"holderName\" : \"Jumping Jack\",\n" +
+                    "        \"issuingBank\" : \"Bank of America\",\n" +
+                    "        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n" +
+                    "        \"cvv\" : 123\n" +
+                    "    },\n" +
+                    "    \"charge\" : {\n" +
+                    "        \"currency\" : \"INR\",\n" +
+                    "        \"amount\" : 1235.45\n" +
+                    "    }\n" +
+                    "}");
 
     final ResultActions resultActions = whenTheRequestIsMade(request);
 

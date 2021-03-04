@@ -1,56 +1,54 @@
 package com.tsys.fraud_checker.web;
 
-import com.tsys.fraud_checker.domain.CreditCard;
-import com.tsys.fraud_checker.domain.FraudStatus;
-import com.tsys.fraud_checker.domain.Money;
 import com.tsys.fraud_checker.services.VerificationService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 // For Junit4, use @RunWith
-// @RunWith(SpringRunner.class)
+// @RunWith(MockitoJUnitRunner.class)
 // For Junit5, use @ExtendWith
-// SpringExtension.class provides a bridge between Spring Boot test features
-// and JUnit. Whenever we use any Spring Boot testing features in our JUnit
-// tests, this annotation will be required.
-@ExtendWith(SpringExtension.class)
-// We're only testing the web layer, we use the @WebMvcTest
-// annotation. It allows us to easily test requests and responses
-// using the set of static methods implemented by the
-// MockMvcRequestBuilders and MockMvcResultMatchers classes.
-//
-// Using the @WebMvcTest Annotation we are loading Spring's
-// WebApplication Context and hence all Controller Advices and Filters
-// get automatically applied.
-//
-// We verify the validation behavior by applying Validation Advice, it
-// is automatically available, because we are using @WebMvcTest annotation.
+@ExtendWith(MockitoExtension.class)
+// Here we are using MockMVC in standalone mode, hence not loading any context. 
 //
 // NOTE: No Web-Server is deployed
-@WebMvcTest(FraudCheckerController.class)
-public class FraudCheckerControllerUnitTest {
+@Tags({
+        @Tag("StandAlone"),
+        @Tag("UnitTest")
+})
+public class FraudCheckerControllerTest {
 
-  @MockBean
+  @Mock
   private VerificationService verificationService;
 
-  @Autowired
+  // Annotate our FraudCheckerController instance with @InjectMocks. So, Mockito injects the
+  // mocked verificationService into the controller instead of the real bean instance.
+  @InjectMocks
+  private FraudCheckerController fraudCheckerController;
+
   private MockMvc mockMvc;
+
+  @BeforeEach
+  public void buildMockMvc() {
+    // MockMvc standalone approach
+    mockMvc = MockMvcBuilders.standaloneSetup(fraudCheckerController)
+            //  Add custom Advices and Filters manually and control each
+            //        .setControllerAdvice(new FraudControllerAdvice())
+            //       .addFilters(new FraudCheckerFilter())
+            .build();
+  }
 
   @Test
   public void health() throws Exception {
@@ -69,12 +67,11 @@ public class FraudCheckerControllerUnitTest {
             MockMvcResultMatchers.status().isOk());
   }
 
-
   private MockHttpServletRequestBuilder givenRequestFor(String url, boolean isPostRequest) {
-    if (isPostRequest)
-      return MockMvcRequestBuilders.post(url).characterEncoding("UTF-8");
-
-    return MockMvcRequestBuilders.get(url).characterEncoding("UTF-8");
+    final MockHttpServletRequestBuilder builder =
+            isPostRequest ? MockMvcRequestBuilders.post(url)
+                    : MockMvcRequestBuilders.get(url);
+    return builder.characterEncoding("UTF-8");
   }
 
   private ResultActions whenTheRequestIsMade(MockHttpServletRequestBuilder request) throws Exception {

@@ -38,7 +38,7 @@ public class Money {
 
   public Money add(Money other) {
     if (currency != other.currency)
-      throw new RuntimeException("For addition the currencies must be same!");
+      throw new IllegalArgumentException("For addition the currencies must be same!");
 
     return new Money(currency, amount + other.amount);
   }

@@ -78,7 +78,8 @@ public class CreditCard {
    */
   @JsonIgnore
   public boolean hasExpired() {
-    return validUntil.after(new Date());
+    final Date now = new Date();
+    return now.after(validUntil);
   }
 
   @Override
