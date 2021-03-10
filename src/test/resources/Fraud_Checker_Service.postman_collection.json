@@ -1,0 +1,558 @@
+{
+	"info": {
+		"_postman_id": "32e67473-4ec8-4443-a7e2-e69ccec890e7",
+		"name": "Fraud Checker Microservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fraud Checker - Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{fraud_checker_url}}/ping",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Check",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no charge)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\" : \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no CVV)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\"\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (No CC)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Empty (Bad) Request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (invalid length CVV)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485284720134093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\": 12\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no CC number)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no holderName)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485-2847-2013-4093\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (empty holderName)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no issuing Bank)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (empty issuing Bank)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485-2847-2013-4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (empty number)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (insufficient card number digits)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4992 7398 716\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				},
+				"description": "The credit card number 4992 7398 716 passes Luhn's checksum, but fails length check"
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no expiry date)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"issuingBank\" : \"Bank of America\",\n        \"holderName\" : \"Jumping Jack\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (empty expiry date)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"issuingBank\" : \"Bank of America\",\n        \"holderName\" : \"Jumping Jack\",\n        \"validUntil\" : \"\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no charge amount)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (no charge currency)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (empty charge currency)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\": \"4485 2847 2013 4093\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fraud Checker - Bad Request (bad CC number)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"creditCard\" : {\n        \"number\" : \"1234 5678 9012 3456\",\n        \"holderName\" : \"Jumping Jack\",\n        \"issuingBank\" : \"Bank of America\",\n        \"validUntil\" : \"2020-10-04T01:00:26.874+00:00\",\n        \"cvv\" : 123\n    },\n    \"charge\" : {\n        \"currency\" : \"INR\",\n        \"amount\" : 1235.45\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
