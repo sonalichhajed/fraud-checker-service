@@ -8,21 +8,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Tag("UnitTest")
 public class CreditCardTest {
 
-  @Test
-  public void isValidBeforeExpiryDate() {
-    final var creditCard = CreditCardBuilder.make()
-                    .withFutureExpiryDate()
-                    .build();
+    @Test
+    public void isValidBeforeExpiryDate() {
+        final var creditCard = CreditCardBuilder.make()
+                .withFutureExpiryDate()
+                .build();
 
-    assertThat(creditCard.hasExpired()).isFalse();
-  }
+        assertThat(creditCard.hasExpired()).isFalse();
+    }
 
-  @Test
-  public void isInvalidAfterExpiryDate() {
-    final var creditCard = CreditCardBuilder.make()
-            .withPastExpiryDate()
-            .build();
+    @Test
+    public void isInvalidAfterExpiryDate() {
+        final var creditCard = CreditCardBuilder.make()
+                .withPastExpiryDate()
+                .build();
 
-    assertThat(creditCard.hasExpired()).isTrue();
-  }
+        assertThat(creditCard.hasExpired()).isTrue();
+    }
 }

@@ -10,16 +10,16 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({ FIELD, PARAMETER })
+@Target({FIELD, PARAMETER})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = { NumberOfDigitsValidator.class })
+@Constraint(validatedBy = {NumberOfDigitsValidator.class})
 public @interface NumberOfDigits {
-  String message() default "{javax.validation.constraints.number_of_digits.message}";
+    String message() default "{javax.validation.constraints.number_of_digits.message}";
 
-  Class<?>[] groups() default { };
+    Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default { };
+    Class<? extends Payload>[] payload() default {};
 
-  int value();
+    int value();
 }

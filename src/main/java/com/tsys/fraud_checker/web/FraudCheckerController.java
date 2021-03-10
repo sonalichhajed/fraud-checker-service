@@ -90,7 +90,7 @@ public class FraudCheckerController {
             @Min(value = 5, message = "A minimum value of 5 is required")
             @Max(value = 9999, message = "A maximum value of 9999 can be given")
             @ApiParam(
-                    name =  "id",
+                    name = "id",
                     type = "int",
                     value = "a number",
                     example = "1",
@@ -113,23 +113,23 @@ public class FraudCheckerController {
      * https://reflectoring.io/bean-validation-with-spring-boot/
      * Bean Validation works by defining constraints to the fields
      * of a class by annotating them with certain annotations.
-     *
+     * <p>
      * Then, you pass an object of that class into a Validator
      * which checks if the constraints are satisfied.
-     *
+     * <p>
      * There are three things we can validate for any incoming HTTP request:
      * 1. the request body,
-     *    @see FraudCheckerController#checkFraud(FraudCheckPayload)
-     * 2. variables within the path (e.g. id in /foos/{id})
-     *    @see FraudCheckerController#validatePathVariable(int)
-     * 3. query parameters.
-     *    @see FraudCheckerController#validateRequestParameter(int)
      *
+     * @see FraudCheckerController#checkFraud(FraudCheckPayload)
+     * 2. variables within the path (e.g. id in /foos/{id})
+     * @see FraudCheckerController#validatePathVariable(int)
+     * 3. query parameters.
+     * @see FraudCheckerController#validateRequestParameter(int)
+     * <p>
      * Use @Valid on Complex Types
      * If the Input class contains a field with another complex type that
      * should be validated, this field, too, needs to be annotated with
      * Valid.
-     *
      */
     @ApiOperation(value = "Check possibility of a fradulent transaction and return a status to the caller.", consumes = "application/json", produces = "application/json", response = FraudStatus.class)
     @ApiResponses(value = {

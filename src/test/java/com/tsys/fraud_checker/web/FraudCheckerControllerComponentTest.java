@@ -31,108 +31,104 @@ import static org.mockito.BDDMockito.given;
 @Tag("ComponentTest")
 public class FraudCheckerControllerComponentTest {
 
-  @MockBean
-  private Random random;
-
-  @Autowired
-  private FraudCheckerController fraudCheckerController;
-
-  @Autowired
-  private TestRestTemplate restTemplate;
-
-  private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
-  private final CreditCard validCard = CreditCardBuilder.make()
-          .withHolder("Jumping Jack")
-          .withIssuingBank("Bank of Test")
-          .withValidNumber()
-          .withValidCVV()
-          .withFutureExpiryDate()
-          .build();
-
-
-  @Test
-  public void health() {
-    // Given-When
-    final ResponseEntity<String> response = restTemplate.getForEntity("/ping", String.class);
-
-    // Then
-    assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    assertThat(response.getBody(), is("{ \"PONG\" : \"FraudCheckerController is running fine!\" }"));
-  }
-
-  @Test
-  public void homesToIndexPage() {
-    final ResponseEntity<String> response = restTemplate.getForEntity("/", String.class);
-    assertThat(response.getStatusCode(), is(HttpStatus.OK));
-  }
-
-  @Test
-  public void fraudCheckPasses() {
-    // Given
-    given(random.nextInt(anyInt()))
-            .willReturn(-2000) // for sleepMillis
-            .willReturn(0) // for CVV status PASS
-            .willReturn(0); // for AddressVerification status PASS
-
-    // When
-    final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
-    assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    final FraudStatus fraudStatus = response.getBody();
-    assertThat(fraudStatus.overall, is(FraudStatus.PASS));
-  }
-
-  @Test
-  public void fraudCheckFailsForInvalidCvv() {
-    // Given
-    given(random.nextInt(anyInt()))
-            .willReturn(-2000) // for sleepMillis
-            .willReturn(1) // for CVV status FAIL
-            .willReturn(0); // for AddressVerification status PASS
-
-    // When
-    final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
-    assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    final FraudStatus fraudStatus = response.getBody();
-    assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
-  }
-
-  @Test
-  public void fraudCheckFailsForExpiredCard() {
-    // Given
-    final var expiredCard = CreditCardBuilder.make()
+    private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
+    private final CreditCard validCard = CreditCardBuilder.make()
             .withHolder("Jumping Jack")
             .withIssuingBank("Bank of Test")
             .withValidNumber()
             .withValidCVV()
-            .withPastExpiryDate()
+            .withFutureExpiryDate()
             .build();
+    @MockBean
+    private Random random;
+    @Autowired
+    private FraudCheckerController fraudCheckerController;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
-    System.out.println("expiredCard = " + expiredCard);
-    given(random.nextInt(anyInt()))
-            .willReturn(-2000) // for sleepMillis
-            .willReturn(0) // for CVV status PASS
-            .willReturn(0); // for AddressVerification status PASS
+    @Test
+    public void health() {
+        // Given-When
+        final ResponseEntity<String> response = restTemplate.getForEntity("/ping", String.class);
 
-    // When
-    final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(expiredCard, chargedAmount), FraudStatus.class);
-    assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    final FraudStatus fraudStatus = response.getBody();
-    assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
-  }
+        // Then
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        assertThat(response.getBody(), is("{ \"PONG\" : \"FraudCheckerController is running fine!\" }"));
+    }
 
-  @Test
-  public void fraudCheckIsSuspicious() {
-    // Given
-    given(random.nextInt(anyInt()))
-            .willReturn(-2000) // for sleepMillis
-            .willReturn(0) // for CVV status PASS
-            .willReturn(1); // for AddressVerification status FAIL
+    @Test
+    public void homesToIndexPage() {
+        final ResponseEntity<String> response = restTemplate.getForEntity("/", String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
 
-    // When
-    final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
-    assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    final FraudStatus fraudStatus = response.getBody();
-    assertThat(fraudStatus.overall, is(FraudStatus.SUSPICIOUS));
-  }
+    @Test
+    public void fraudCheckPasses() {
+        // Given
+        given(random.nextInt(anyInt()))
+                .willReturn(-2000) // for sleepMillis
+                .willReturn(0) // for CVV status PASS
+                .willReturn(0); // for AddressVerification status PASS
+
+        // When
+        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        final FraudStatus fraudStatus = response.getBody();
+        assertThat(fraudStatus.overall, is(FraudStatus.PASS));
+    }
+
+    @Test
+    public void fraudCheckFailsForInvalidCvv() {
+        // Given
+        given(random.nextInt(anyInt()))
+                .willReturn(-2000) // for sleepMillis
+                .willReturn(1) // for CVV status FAIL
+                .willReturn(0); // for AddressVerification status PASS
+
+        // When
+        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        final FraudStatus fraudStatus = response.getBody();
+        assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
+    }
+
+    @Test
+    public void fraudCheckFailsForExpiredCard() {
+        // Given
+        final var expiredCard = CreditCardBuilder.make()
+                .withHolder("Jumping Jack")
+                .withIssuingBank("Bank of Test")
+                .withValidNumber()
+                .withValidCVV()
+                .withPastExpiryDate()
+                .build();
+
+        System.out.println("expiredCard = " + expiredCard);
+        given(random.nextInt(anyInt()))
+                .willReturn(-2000) // for sleepMillis
+                .willReturn(0) // for CVV status PASS
+                .willReturn(0); // for AddressVerification status PASS
+
+        // When
+        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(expiredCard, chargedAmount), FraudStatus.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        final FraudStatus fraudStatus = response.getBody();
+        assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
+    }
+
+    @Test
+    public void fraudCheckIsSuspicious() {
+        // Given
+        given(random.nextInt(anyInt()))
+                .willReturn(-2000) // for sleepMillis
+                .willReturn(0) // for CVV status PASS
+                .willReturn(1); // for AddressVerification status FAIL
+
+        // When
+        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        final FraudStatus fraudStatus = response.getBody();
+        assertThat(fraudStatus.overall, is(FraudStatus.SUSPICIOUS));
+    }
 
 }

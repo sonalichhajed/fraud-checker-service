@@ -13,24 +13,24 @@ import javax.validation.ConstraintViolationException;
  * The @ControllerAdvice annotation allows us to consolidate our
  * multiple, scattered @ExceptionHandlers from before into a single,
  * global error handling component.
- *
+ * <p>
  * The actual mechanism is extremely simple but also very flexible:
- *
+ * <p>
  * - It gives us full control over the body of the response as well
- *   as the status code.
+ * as the status code.
  * - It provides mapping of several exceptions to the same method, to
- *   be handled together.
+ * be handled together.
  * - It makes good use of the newer RESTful ResposeEntity response.
- *
+ * <p>
  * Keep in mind to match the exceptions declared with @ExceptionHandler
  * to the exception used as the argument of the method.
- *
+ * <p>
  * In case there is no match, the compiler will not complain — no
  * reason it should — and Spring will not complain either.
- *
+ * <p>
  * In such a case, when the exception is actually thrown at runtime,
  * the exception resolving mechanism will fail with:
- *
+ * <p>
  * java.lang.IllegalStateException: No suitable resolver for argument [0]
  * [type=...] HandlerMethod details: ..
  */
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(violation -> new ValidationError(violation.getPropertyPath().toString(),
                         violation.getMessage()))
-                .forEach(validationError ->  errors.add(validationError));
+                .forEach(validationError -> errors.add(validationError));
         return errors;
     }
 

@@ -39,41 +39,39 @@ package com.tsys.fraud_checker.domain;
 
 public class FraudStatus {
 
-  public static final String PASS = "pass";
-  public static final String FAIL = "fail";
-  public static final String SUSPICIOUS = "suspicious";
+    public static final String PASS = "pass";
+    public static final String FAIL = "fail";
+    public static final String SUSPICIOUS = "suspicious";
 
-  public static final String ADDRESS_VERIFICATION_IA = "incorrect address";
+    public static final String ADDRESS_VERIFICATION_IA = "incorrect address";
+    public final String cvvStatus;
+    public final String avStatus;
+    public final String overall;
+    private String[] cvvStatuses = new String[]{PASS, FAIL};
+    private String[] avStatuses = new String[]{PASS, ADDRESS_VERIFICATION_IA};
 
-  private String[] cvvStatuses = new String[]{PASS, FAIL};
-  private String[] avStatuses = new String[]{PASS, ADDRESS_VERIFICATION_IA};
+    public FraudStatus(int cvvStatusCode, int avStatusCode, boolean hasCardExpired) {
+        this.cvvStatus = cvvStatuses[cvvStatusCode];
+        this.avStatus = avStatuses[avStatusCode];
+        this.overall = computeOverallStatus(cvvStatus, avStatus, hasCardExpired);
+    }
 
-  public final String cvvStatus;
-  public final String avStatus;
-  public final String overall;
+    private String computeOverallStatus(String cvvStatus, String avStatus, boolean hasCardExpired) {
+        if (hasCardExpired || cvvStatus.equals(FAIL))
+            return FAIL;
 
-  public FraudStatus(int cvvStatusCode, int avStatusCode, boolean hasCardExpired) {
-    this.cvvStatus = cvvStatuses[cvvStatusCode];
-    this.avStatus = avStatuses[avStatusCode];
-    this.overall = computeOverallStatus(cvvStatus, avStatus, hasCardExpired);
-  }
+        if (avStatus.equals(ADDRESS_VERIFICATION_IA) && cvvStatus.equals(PASS))
+            return SUSPICIOUS;
 
-  private String computeOverallStatus(String cvvStatus, String avStatus, boolean hasCardExpired) {
-    if (hasCardExpired || cvvStatus.equals(FAIL))
-      return FAIL;
+        return PASS;
+    }
 
-    if (avStatus.equals(ADDRESS_VERIFICATION_IA) && cvvStatus.equals(PASS))
-      return SUSPICIOUS;
-
-    return PASS;
-  }
-
-  @Override
-  public String toString() {
-    return "FraudStatus{" +
-        "cvvStatus='" + cvvStatus + '\'' +
-        ", avStatus='" + avStatus + '\'' +
-        ", overall='" + overall + '\'' +
-        '}';
-  }
+    @Override
+    public String toString() {
+        return "FraudStatus{" +
+                "cvvStatus='" + cvvStatus + '\'' +
+                ", avStatus='" + avStatus + '\'' +
+                ", overall='" + overall + '\'' +
+                '}';
+    }
 }

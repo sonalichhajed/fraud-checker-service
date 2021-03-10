@@ -10,14 +10,15 @@ import java.util.List;
  * message to the client. In order to enable the client to display
  * a helpful error message, we should return a data structure that
  * contains an error message for each validation that failed.
- *
+ * <p>
  * First define ValidationErrorResponse and it contains a list of
  * ValidationError objects
- *
+ * <p>
  * Then, we create a global ControllerAdvice that handles all
  * ConstraintViolationExceptions that bubble up to the controller
  * level. In order to catch validation errors for request bodies
  * as well, we will also handle MethodArgumentNotValidExceptions:
+ *
  * @see GlobalExceptionHandler
  */
 public class ValidationErrorsResponse {

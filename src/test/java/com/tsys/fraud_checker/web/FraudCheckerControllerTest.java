@@ -30,55 +30,55 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 })
 public class FraudCheckerControllerTest {
 
-  @Mock
-  private VerificationService verificationService;
+    @Mock
+    private VerificationService verificationService;
 
-  // Annotate our FraudCheckerController instance with @InjectMocks. So, Mockito injects the
-  // mocked verificationService into the controller instead of the real bean instance.
-  @InjectMocks
-  private FraudCheckerController fraudCheckerController;
+    // Annotate our FraudCheckerController instance with @InjectMocks. So, Mockito injects the
+    // mocked verificationService into the controller instead of the real bean instance.
+    @InjectMocks
+    private FraudCheckerController fraudCheckerController;
 
-  private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-  @BeforeEach
-  public void buildMockMvc() {
-    // MockMvc standalone approach
-    mockMvc = MockMvcBuilders.standaloneSetup(fraudCheckerController)
-            //  Add custom Advices and Filters manually and control each
-            //        .setControllerAdvice(new FraudControllerAdvice())
-            //       .addFilters(new FraudCheckerFilter())
-            .build();
-  }
+    @BeforeEach
+    public void buildMockMvc() {
+        // MockMvc standalone approach
+        mockMvc = MockMvcBuilders.standaloneSetup(fraudCheckerController)
+                //  Add custom Advices and Filters manually and control each
+                //        .setControllerAdvice(new FraudControllerAdvice())
+                //       .addFilters(new FraudCheckerFilter())
+                .build();
+    }
 
-  @Test
-  public void health() throws Exception {
-    final var request = givenRequestFor("/ping", false);
-    final ResultActions resultActions = whenTheRequestIsMade(request);
-    thenExpect(resultActions,
-            MockMvcResultMatchers.status().isOk(),
-            MockMvcResultMatchers.content().bytes("{ \"PONG\" : \"FraudCheckerController is running fine!\" }".getBytes()));
-  }
+    @Test
+    public void health() throws Exception {
+        final var request = givenRequestFor("/ping", false);
+        final ResultActions resultActions = whenTheRequestIsMade(request);
+        thenExpect(resultActions,
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.content().bytes("{ \"PONG\" : \"FraudCheckerController is running fine!\" }".getBytes()));
+    }
 
-  @Test
-  public void homesToIndexPage() throws Exception {
-    final var request = givenRequestFor("/", false);
-    final ResultActions resultActions = whenTheRequestIsMade(request);
-    thenExpect(resultActions,
-            MockMvcResultMatchers.status().isOk());
-  }
+    @Test
+    public void homesToIndexPage() throws Exception {
+        final var request = givenRequestFor("/", false);
+        final ResultActions resultActions = whenTheRequestIsMade(request);
+        thenExpect(resultActions,
+                MockMvcResultMatchers.status().isOk());
+    }
 
-  private MockHttpServletRequestBuilder givenRequestFor(String url, boolean isPostRequest) {
-    final MockHttpServletRequestBuilder builder =
-            isPostRequest ? MockMvcRequestBuilders.post(url)
-                    : MockMvcRequestBuilders.get(url);
-    return builder.characterEncoding("UTF-8");
-  }
+    private MockHttpServletRequestBuilder givenRequestFor(String url, boolean isPostRequest) {
+        final MockHttpServletRequestBuilder builder =
+                isPostRequest ? MockMvcRequestBuilders.post(url)
+                        : MockMvcRequestBuilders.get(url);
+        return builder.characterEncoding("UTF-8");
+    }
 
-  private ResultActions whenTheRequestIsMade(MockHttpServletRequestBuilder request) throws Exception {
-    return mockMvc.perform(request);
-  }
+    private ResultActions whenTheRequestIsMade(MockHttpServletRequestBuilder request) throws Exception {
+        return mockMvc.perform(request);
+    }
 
-  private void thenExpect(ResultActions resultActions, ResultMatcher... matchers) throws Exception {
-    resultActions.andExpect(ResultMatcher.matchAll(matchers));
-  }
+    private void thenExpect(ResultActions resultActions, ResultMatcher... matchers) throws Exception {
+        resultActions.andExpect(ResultMatcher.matchAll(matchers));
+    }
 }
