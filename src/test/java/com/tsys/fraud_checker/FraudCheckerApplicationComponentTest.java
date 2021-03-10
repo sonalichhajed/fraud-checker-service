@@ -1,9 +1,11 @@
-package com.tsys.fraud_checker.web;
+package com.tsys.fraud_checker;
 
 import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.CreditCardBuilder;
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.domain.Money;
+import com.tsys.fraud_checker.web.FraudCheckPayload;
+import com.tsys.fraud_checker.web.FraudCheckerController;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +31,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Tag("ComponentTest")
-public class FraudCheckerControllerComponentTest {
+public class FraudCheckerApplicationComponentTest {
 
     private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
     private final CreditCard validCard = CreditCardBuilder.make()
