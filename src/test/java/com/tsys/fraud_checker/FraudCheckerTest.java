@@ -7,6 +7,7 @@ import com.tsys.fraud_checker.domain.Money;
 import com.tsys.fraud_checker.web.FraudCheckPayload;
 import com.tsys.fraud_checker.web.FraudCheckerController;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,11 @@ import static org.mockito.BDDMockito.given;
 // For Junit5, use @ExtendWith
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Tag("ComponentTest")
-public class FraudCheckerApplicationComponentTest {
+@Tags({
+        @Tag("In-Process"),
+        @Tag("ComponentTest")
+})
+public class FraudCheckerTest {
 
     private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
     private final CreditCard validCard = CreditCardBuilder.make()
@@ -41,17 +45,20 @@ public class FraudCheckerApplicationComponentTest {
             .withValidCVV()
             .withFutureExpiryDate()
             .build();
+
     @MockBean
     private Random random;
+
     @Autowired
     private FraudCheckerController fraudCheckerController;
+
     @Autowired
-    private TestRestTemplate restTemplate;
+    private TestRestTemplate client;
 
     @Test
     public void health() {
         // Given-When
-        final ResponseEntity<String> response = restTemplate.getForEntity("/ping", String.class);
+        final ResponseEntity<String> response = client.getForEntity("/ping", String.class);
 
         // Then
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -60,7 +67,7 @@ public class FraudCheckerApplicationComponentTest {
 
     @Test
     public void homesToIndexPage() {
-        final ResponseEntity<String> response = restTemplate.getForEntity("/", String.class);
+        final ResponseEntity<String> response = client.getForEntity("/", String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
@@ -73,7 +80,7 @@ public class FraudCheckerApplicationComponentTest {
                 .willReturn(0); // for AddressVerification status PASS
 
         // When
-        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+        final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.PASS));
@@ -88,7 +95,7 @@ public class FraudCheckerApplicationComponentTest {
                 .willReturn(0); // for AddressVerification status PASS
 
         // When
-        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+        final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
@@ -112,7 +119,7 @@ public class FraudCheckerApplicationComponentTest {
                 .willReturn(0); // for AddressVerification status PASS
 
         // When
-        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(expiredCard, chargedAmount), FraudStatus.class);
+        final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(expiredCard, chargedAmount), FraudStatus.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
@@ -127,10 +134,9 @@ public class FraudCheckerApplicationComponentTest {
                 .willReturn(1); // for AddressVerification status FAIL
 
         // When
-        final ResponseEntity<FraudStatus> response = restTemplate.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+        final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.SUSPICIOUS));
     }
-
 }
