@@ -48,6 +48,8 @@ import static org.mockito.BDDMockito.given;
 // Here’s a validation test at the service level
 public class VerificationServiceValidationTest {
 
+    private static final int CVV_STATUS_PASS = 0;
+    private static final int ADDRESS_VERIFICATION_STATUS_PASS = 0;
     private final Money chargedAmount = new Money(Currency.getInstance("INR"), 1235.45d);
     private final CreditCard validCard = CreditCardBuilder.make()
             .withHolder("Jumping Jack")
@@ -65,8 +67,8 @@ public class VerificationServiceValidationTest {
     public void isValid() throws InterruptedException {
         given(random.nextInt(anyInt()))
                 .willReturn(-2000) // for sleepMillis
-                .willReturn(0) // for CVV status PASS
-                .willReturn(0); // for AddressVerification status PASS
+                .willReturn(CVV_STATUS_PASS)
+                .willReturn(ADDRESS_VERIFICATION_STATUS_PASS);
 
         final var fraudStatus = service.verifyTransactionAuthenticity(validCard, chargedAmount);
         assertThat(fraudStatus).isNotNull();
