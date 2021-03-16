@@ -1,7 +1,7 @@
 # Getting Started
 
 ## About Fraud Checker Service
-###Address Verification Service (AVS)
+### Address Verification Service (AVS)
 AVS is an effective security measure to detect online fraud.
 When customers purchase items, they need to provide their billing
 address and ZIP code. An AVS will check if this address matches with
@@ -15,7 +15,7 @@ checking the CVV (Card Verification Value), email address, IP address
 on the transaction or allow your payment gateway to decline the
 transaction.
 
-###Card Verification Value (CVV)
+### Card Verification Value (CVV)
 The CVV (or Card Verification Code ) is the 3 or 4-digit code that
 is on every credit card. The code should never be stored on the
 merchant’s database. A CVV filter acts as an added security measure,
@@ -29,7 +29,7 @@ Friendly fraud, is a risk associated with CNP transactions, that can
 lead to a chargeback. Enabling a CVV filter helps merchants fight
 fraud and reduce chargebacks.
 
-###Device Identification
+### Device Identification
 Device identification analysis the computer rather than the person
 who is visiting your website. It profiles the operating system,
 internet connection and browser to gauge if the online transaction
