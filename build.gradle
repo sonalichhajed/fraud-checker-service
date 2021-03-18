@@ -36,6 +36,29 @@ test {
     useJUnitPlatform()
 }
 
+task taggedTest(type: Test) {
+    def incTags = System.getProperty("includeTags") ?
+            System.getProperty("includeTags") : 'UnitTest'
+    def excTags = System.getProperty("excludeTags") ?
+            System.getProperty("excludeTags") : 'ComponentTest & End-To-End-Test'
+
+    println '*'
+    println "* Running tests with Tags = $incTags and exclude tests with Tags = $excTags"
+    println '*'
+
+    useJUnitPlatform {
+        includeTags  incTags
+        excludeTags  excTags
+    }
+    reports {
+        junitXml.enabled true
+        junitXml.destination(file("${testResultsDir}/test"))
+        binaryResultsDirectory = file("${testResultsDir}/test/binary")
+        html.enabled true
+        html.destination(file("$testReportDir/test"))
+    }
+}
+
 // To reload on changing a static file, we need a way to copy
 // the changed files into the classpath of the running app.
 task reload(type: Copy) {

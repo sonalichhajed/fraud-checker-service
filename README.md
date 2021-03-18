@@ -47,6 +47,14 @@ patterns and assess risk if any.
     * To reload the latest classes in the JVM, use ```gradle compileJava```  
     * To reload the latest changes in static HTML files, use ```gradle reload```  
 
+### To Run Specific Tests
+1. Running a Test ==> ```gradle test --tests com.tsys.fraud_checker.FraudCheckerTest```.
+2. Running Tagged Tests ==> 
+    * Run tests having a tag and excluding another ```gradle taggedTest -DincludeTags='UnitTest' -DexcludeTags='End-To-End-Test'```.
+    * Run tests that have both the tags StandAlone and UnitTest, and exclude ComponentTest - ```gradle taggedTest -DincludeTags='StandAlone & UnitTest' -DexcludeTags='ComponentTest'```.
+    * Run tests that have either the StandAlone, or the ComponentTest tags and exclude End-To-End-Test - ```gradle taggedTest -DincludeTags='StandAlone | ComponentTest' -DexcludeTags='End-To-End-Test'```.
+Note: you can put ```-i``` at the end of each to get further information while running the tests
+    
 ### To Debug
 * Using only Intellij IDE
     * Debugging is as simple as navigating to the class with the main method, right-clicking the triangle icon, and choosing Debug.
