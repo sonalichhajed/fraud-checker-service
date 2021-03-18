@@ -1,6 +1,7 @@
 package com.tsys.fraud_checker.domain;
 
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import java.util.Currency;
@@ -9,7 +10,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Tag("UnitTest")
+@Tags({
+        @Tag("StandAlone"),
+        @Tag("UnitTest")
+})
 public class MoneyTest {
     private final Money inr_100_253 = new Money(Currency.getInstance("INR"), 100.253);
     private final Money usd5 = new Money(Currency.getInstance("USD"), 5d);

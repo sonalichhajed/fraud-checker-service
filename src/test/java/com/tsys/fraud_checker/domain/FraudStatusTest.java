@@ -1,12 +1,16 @@
 package com.tsys.fraud_checker.domain;
 
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@Tag("UnitTest")
+@Tags({
+        @Tag("StandAlone"),
+        @Tag("UnitTest")
+})
 public class FraudStatusTest {
 
     @Test

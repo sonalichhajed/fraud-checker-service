@@ -15,13 +15,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.nio.charset.Charset;
 import java.util.Currency;
 import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -55,6 +58,11 @@ public class FraudCheckerTest {
     @Autowired
     private TestRestTemplate client;
 
+    private static final int CVV_STATUS_PASS = 0;
+    private static final int CVV_STATUS_FAIL = 1;
+    private static final int ADDRESS_VERIFICATION_STATUS_PASS = 0;
+    private static final int ADDRESS_VERIFICATION_STATUS_FAIL = 1;
+
     @Test
     public void health() {
         // Given-When
@@ -67,8 +75,15 @@ public class FraudCheckerTest {
 
     @Test
     public void homesToIndexPage() {
-        final ResponseEntity<String> response = client.getForEntity("/", String.class);
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        // Given-When
+        final ResponseEntity<String> indexPage = client.getForEntity("/", String.class);
+
+        // Then
+        assertThat(indexPage.getStatusCode(), is(HttpStatus.OK));
+        assertThat(indexPage.getHeaders().getContentType(), is(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        final String body = indexPage.getBody();
+        assertThat(body, org.hamcrest.Matchers.startsWith("<!DOCTYPE html>"));
+        assertThat(body, containsString("Fraud Checker Service"));
     }
 
     @Test
@@ -76,11 +91,13 @@ public class FraudCheckerTest {
         // Given
         given(random.nextInt(anyInt()))
                 .willReturn(-2000) // for sleepMillis
-                .willReturn(0) // for CVV status PASS
-                .willReturn(0); // for AddressVerification status PASS
+                .willReturn(CVV_STATUS_PASS)
+                .willReturn(ADDRESS_VERIFICATION_STATUS_PASS);
 
         // When
         final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+
+        // Then
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.PASS));
@@ -91,11 +108,13 @@ public class FraudCheckerTest {
         // Given
         given(random.nextInt(anyInt()))
                 .willReturn(-2000) // for sleepMillis
-                .willReturn(1) // for CVV status FAIL
-                .willReturn(0); // for AddressVerification status PASS
+                .willReturn(CVV_STATUS_FAIL)
+                .willReturn(ADDRESS_VERIFICATION_STATUS_PASS);
 
         // When
         final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+
+        // Then
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
@@ -115,11 +134,13 @@ public class FraudCheckerTest {
         System.out.println("expiredCard = " + expiredCard);
         given(random.nextInt(anyInt()))
                 .willReturn(-2000) // for sleepMillis
-                .willReturn(0) // for CVV status PASS
-                .willReturn(0); // for AddressVerification status PASS
+                .willReturn(CVV_STATUS_PASS)
+                .willReturn(ADDRESS_VERIFICATION_STATUS_PASS);
 
         // When
         final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(expiredCard, chargedAmount), FraudStatus.class);
+
+        // Then
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.FAIL));
@@ -130,11 +151,13 @@ public class FraudCheckerTest {
         // Given
         given(random.nextInt(anyInt()))
                 .willReturn(-2000) // for sleepMillis
-                .willReturn(0) // for CVV status PASS
-                .willReturn(1); // for AddressVerification status FAIL
+                .willReturn(CVV_STATUS_PASS)
+                .willReturn(ADDRESS_VERIFICATION_STATUS_FAIL);
 
         // When
         final ResponseEntity<FraudStatus> response = client.postForEntity("/check", new FraudCheckPayload(validCard, chargedAmount), FraudStatus.class);
+
+        // Then
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         final FraudStatus fraudStatus = response.getBody();
         assertThat(fraudStatus.overall, is(FraudStatus.SUSPICIOUS));
