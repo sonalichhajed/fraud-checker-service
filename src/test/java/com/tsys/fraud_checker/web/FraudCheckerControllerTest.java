@@ -1,6 +1,6 @@
 package com.tsys.fraud_checker.web;
 
-import com.tsys.fraud_checker.services.VerificationService;
+import com.tsys.fraud_checker.services.DefaultVerificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class FraudCheckerControllerTest {
 
     @Mock
-    private VerificationService verificationService;
+    private DefaultVerificationService verificationService;
 
     // Annotate our FraudCheckerController instance with @InjectMocks. So, Mockito injects the
     // mocked verificationService into the controller instead of the real bean instance.

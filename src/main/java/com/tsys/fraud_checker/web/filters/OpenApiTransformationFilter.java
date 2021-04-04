@@ -1,4 +1,4 @@
-package com.tsys.fraud_checker.config;
+package com.tsys.fraud_checker.web.filters;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.responses.ApiResponse;

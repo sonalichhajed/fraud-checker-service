@@ -1,4 +1,4 @@
-package com.tsys.fraud_checker.web.errors;
+package com.tsys.fraud_checker.web.advices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,7 @@ import java.util.List;
  * ConstraintViolationExceptions that bubble up to the controller
  * level. In order to catch validation errors for request bodies
  * as well, we will also handle MethodArgumentNotValidExceptions:
- *
- * @see GlobalExceptionHandler
+ * @see com.tsys.fraud_checker.web.advices.GlobalExceptionAdvice
  */
 public class ValidationErrorsResponse {
     public final List<ValidationError> validationErrors = new ArrayList<>();

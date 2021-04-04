@@ -3,13 +3,13 @@ package com.tsys.fraud_checker.web;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tsys.fraud_checker.config.FraudControllerAdvice;
 import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.CreditCardBuilder;
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.domain.Money;
-import com.tsys.fraud_checker.services.VerificationService;
-import com.tsys.fraud_checker.web.errors.GlobalExceptionHandler;
+import com.tsys.fraud_checker.services.DefaultVerificationService;
+import com.tsys.fraud_checker.web.advices.FraudControllerAdvice;
+import com.tsys.fraud_checker.web.advices.GlobalExceptionAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -58,8 +58,8 @@ public class FraudCheckerControllerCheckFraudValidationTest {
             .withFutureExpiryDate()
             .build();
     @Mock
-    private VerificationService verificationService;
-    ;
+    private DefaultVerificationService verificationService;
+
     // Annotate our FraudCheckerController instance with @InjectMocks. So, Mockito injects the
     // mocked verificationService into the controller instead of the real bean instance.
     @InjectMocks
@@ -72,7 +72,7 @@ public class FraudCheckerControllerCheckFraudValidationTest {
         // MockMvc standalone approach
         mockMvc = MockMvcBuilders.standaloneSetup(fraudCheckerController)
                 //  Add custom Advices and Filters manually and control each
-                .setControllerAdvice(new GlobalExceptionHandler(), new FraudControllerAdvice())
+                .setControllerAdvice(new GlobalExceptionAdvice(), new FraudControllerAdvice())
                 //       .addFilters(new FraudCheckerFilter())
                 .build();
     }

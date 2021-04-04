@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.LuhnCheck;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
 
 public class CreditCard {
 
@@ -80,6 +81,27 @@ public class CreditCard {
     public boolean hasExpired() {
         final Date now = new Date();
         return now.after(validUntil);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        CreditCard that = (CreditCard) o;
+        return number.equals(that.number) &&
+                holderName.equals(that.holderName) &&
+                issuingBank.equals(that.issuingBank) &&
+                validUntil.equals(that.validUntil) &&
+                cvv.equals(that.cvv);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, holderName, issuingBank, validUntil, cvv);
     }
 
     @Override

@@ -1,12 +1,14 @@
 package com.tsys.fraud_checker.web;
 
 import com.tsys.fraud_checker.domain.FraudStatus;
+import com.tsys.fraud_checker.services.DefaultVerificationService;
 import com.tsys.fraud_checker.services.VerificationService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,6 +55,7 @@ import java.util.logging.Logger;
 // parameter FraudCheckPayload.
 @Validated
 @RequestMapping("/")
+//@Qualifier("verificationService")
 public class FraudCheckerController {
 
     private static final Logger LOG = Logger.getLogger(FraudCheckerController.class.getName());

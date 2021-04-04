@@ -6,7 +6,7 @@ import com.tsys.fraud_checker.domain.CreditCard;
 import com.tsys.fraud_checker.domain.CreditCardBuilder;
 import com.tsys.fraud_checker.domain.FraudStatus;
 import com.tsys.fraud_checker.domain.Money;
-import com.tsys.fraud_checker.services.VerificationService;
+import com.tsys.fraud_checker.services.DefaultVerificationService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +55,7 @@ public class FraudCheckerControllerCheckFraudValidationWebMvcTest {
             .withFutureExpiryDate()
             .build();
     @MockBean
-    private VerificationService verificationService;
+    private DefaultVerificationService verificationService;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired

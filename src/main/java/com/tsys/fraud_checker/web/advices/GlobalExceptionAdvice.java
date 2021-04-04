@@ -1,4 +1,4 @@
-package com.tsys.fraud_checker.web.errors;
+package com.tsys.fraud_checker.web.advices;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,7 +35,7 @@ import javax.validation.ConstraintViolationException;
  * [type=...] HandlerMethod details: ..
  */
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionAdvice {
 
     /**
      * What we’re doing here is simply reading information about
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ValidationErrorsResponse onMethodArgumentNotValidException(
             MethodArgumentNotValidException e) {
-        var errors = new ValidationErrorsResponse();
+        final var errors = new ValidationErrorsResponse();
         e.getBindingResult().getFieldErrors()
                 .stream()
                 .map(fieldError -> new ValidationError(fieldError.getField(), fieldError.getDefaultMessage()))

@@ -33,4 +33,12 @@ public class FraudCheckPayload {
         this.creditCard = creditCard;
         this.charge = charge;
     }
+
+    @Override
+    public String toString() {
+        return "FraudCheckPayload{" +
+                "creditCard=" + creditCard +
+                ", charge=" + charge +
+                '}';
+    }
 }

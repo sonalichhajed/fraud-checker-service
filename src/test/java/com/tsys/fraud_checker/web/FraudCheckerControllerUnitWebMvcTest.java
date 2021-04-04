@@ -1,6 +1,6 @@
 package com.tsys.fraud_checker.web;
 
-import com.tsys.fraud_checker.services.VerificationService;
+import com.tsys.fraud_checker.services.DefaultVerificationService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +40,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class FraudCheckerControllerUnitWebMvcTest {
 
     @MockBean
-    private VerificationService verificationService;
+    private DefaultVerificationService verificationService;
 
     @Autowired
     private MockMvc mockMvc;

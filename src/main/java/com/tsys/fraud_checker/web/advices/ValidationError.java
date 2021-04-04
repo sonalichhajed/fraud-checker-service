@@ -1,4 +1,4 @@
-package com.tsys.fraud_checker.web.errors;
+package com.tsys.fraud_checker.web.advices;
 
 public class ValidationError {
     public final String fieldName;

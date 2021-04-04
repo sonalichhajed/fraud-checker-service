@@ -1,7 +1,9 @@
 package com.tsys.fraud_checker.web;
 
-import com.tsys.fraud_checker.services.VerificationService;
-import org.junit.jupiter.api.Test;
+import com.tsys.fraud_checker.services.DefaultVerificationService;
+import com.tsys.fraud_checker.web.advices.FraudControllerAdvice;
+import com.tsys.fraud_checker.web.advices.GlobalExceptionAdvice;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
