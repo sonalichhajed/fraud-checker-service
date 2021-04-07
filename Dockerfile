@@ -12,6 +12,10 @@ RUN addgroup -S tsys && adduser -S dhaval -G tsys
 # USER appuser
 USER dhaval:tsys
 
+# No default value set, pass one from docker build or gradle build
+ARG BUILD_VERSION
+
+# Set default value or pass one from gradle build
 ARG JAR_FILE=build/libs/*.jar
 # COPY will copy the application jar file into the image
 COPY ${JAR_FILE} fraud-checker-service.jar
@@ -21,7 +25,10 @@ COPY ${JAR_FILE} fraud-checker-service.jar
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=development", "/fraud-checker-service.jar"]
 
 # To build this image use, in the directory where Dockerfile is present
-# $> docker build -t com.tsys/fraud-checker-service .
+# $> docker build -t dhavaldalal/fraud-checker-service:1.0.0 --build-arg BUILD_VERSION=1.0.0 .
 
 # To run this image use
-# $> docker run -p 9001:9001 com.tsys/fraud-checker-service
+# $> docker run -p 9001:9001 --name 'fraud_checker' dhavaldalal/fraud-checker-service:1.0.0
+
+# To debug the container
+# $> docker run -it --rm --entrypoint sh dhavaldalal/fraud-checker-service:1.0.0

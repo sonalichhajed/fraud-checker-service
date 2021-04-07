@@ -1,4 +1,6 @@
 plugins {
+    id 'com.palantir.docker' version '0.26.0'
+    id 'com.palantir.docker-run' version '0.26.0'
     id 'org.springframework.boot' version '2.4.0-M3'
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id 'java'
@@ -7,7 +9,7 @@ plugins {
 }
 
 group = 'com.tsys'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '11'
 
 repositories {
@@ -75,4 +77,41 @@ task reload(type: Copy) {
 // gradle bootRun -Dserver.port=10001 -DcustomArgument=custom
 bootRun {
     systemProperties = System.properties
+}
+
+docker {
+    def dockerImageName = "dhavaldalal/fraud-checker-service"
+    name "$dockerImageName:$version"
+    dockerfile file('Dockerfile')
+    // To directly reference the Jar file in the Dockerfile using ARG JAR_FILE
+    def artifact = "${project.name}-${project.version}.jar"
+    // copies artifact + Dockerfile to the build context
+    files "${libsDir}/$artifact", "$projectDir/docker/$dockerImageName/Dockerfile"
+
+    //
+    // ├── build
+    // │   ├── classes
+    // │   │   └── java
+    // │   ├── docker <<<----- This is the working dir for docker task ----->>>
+    // │   │   └── Dockerfile
+    // │   ├── generated
+    // │   │   └── sources
+    // │   ├── libs
+    // │   │   └── fraud_checker-1.0.0.jar
+    //
+
+    // passing in the jar file location via --build-arg key=value
+    buildArgs([JAR_FILE: artifact, BUILD_VERSION: "$version"])
+    pull false
+    noCache true
+}
+
+dockerRun {
+    name 'fraud_checker'
+    image "dhavaldalal/fraud-checker-service:$version"
+//    volumes 'hostvolume': '/containervolume'
+    ports '9001:9001'
+    daemonize false
+    clean true
+//    env 'MYVAR1': 'MYVALUE1', 'MYVAR2': 'MYVALUE2'
 }
