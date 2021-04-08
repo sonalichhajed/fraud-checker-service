@@ -552,6 +552,103 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Setup Fraud Checker - Check URL to respond in delay",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{fraud_checker_url}}/setup/fraudCheckDelay?respondIn=3000",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"setup",
+						"fraudCheckDelay"
+					],
+					"query": [
+						{
+							"key": "respondIn",
+							"value": "3000",
+							"description": "Time in Millis"
+						},
+						{
+							"key": "respondIn",
+							"value": "0",
+							"description": "Respond Immediately without any delay",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Setup Fraud Checker - Enable or Disable Stubbing for /check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{fraud_checker_url}}/setup/stubbingFor/check?on=false",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"setup",
+						"stubbingFor",
+						"check"
+					],
+					"query": [
+						{
+							"key": "on",
+							"value": "true",
+							"description": "Turn Stubbing ON",
+							"disabled": true
+						},
+						{
+							"key": "on",
+							"value": "false",
+							"description": "Turn Stubbing OFF"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Setup Fraud Checker - Check Request and Response",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"request\": {\n        \"creditCard\": {\n            \"number\": \"4485 2847 2013 4093\",\n            \"holderName\": \"Jumping Jack\",\n            \"issuingBank\": \"Bank of America\",\n            \"validUntil\": \"2020-10-04T01:00:26.874+00:00\",\n            \"cvv\": 123\n        },\n        \"charge\": {\n            \"currency\": \"INR\",\n            \"amount\": 1235.45\n        }\n    },\n    \"response\": {\n        \"cvvStatus\": \"pass\",\n        \"avStatus\": \"pass\",\n        \"overall\": \"pass\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fraud_checker_url}}/setup/stubFor/check",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"setup",
+						"stubFor",
+						"check"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
