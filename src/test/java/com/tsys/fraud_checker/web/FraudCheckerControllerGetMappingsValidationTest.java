@@ -49,9 +49,7 @@ public class FraudCheckerControllerGetMappingsValidationTest {
     @BeforeEach
     public void buildMockMvc() {
         // MockMvc standalone approach
-        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        final Validator validator = validatorFactory.getValidator();
-        final MethodValidationInterceptor methodValidationInterceptor = new MethodValidationInterceptor(validator);
+        final MethodValidationInterceptor methodValidationInterceptor = new MethodValidationInterceptor();
         ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
         proxyFactoryBean.addAdvice(methodValidationInterceptor);
         proxyFactoryBean.setTarget(fraudCheckerController);
