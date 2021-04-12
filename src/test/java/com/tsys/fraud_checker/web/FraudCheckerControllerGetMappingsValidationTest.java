@@ -3,7 +3,10 @@ package com.tsys.fraud_checker.web;
 import com.tsys.fraud_checker.services.DefaultVerificationService;
 import com.tsys.fraud_checker.web.advices.FraudControllerAdvice;
 import com.tsys.fraud_checker.web.advices.GlobalExceptionAdvice;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,10 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.MethodValidationInterceptor;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 // For Junit4, use @RunWith
 // @RunWith(MockitoJUnitRunner.class)
@@ -49,13 +48,12 @@ public class FraudCheckerControllerGetMappingsValidationTest {
     @BeforeEach
     public void buildMockMvc() {
         // MockMvc standalone approach
-        final MethodValidationInterceptor methodValidationInterceptor = new MethodValidationInterceptor();
-        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        final var methodValidationInterceptor = new MethodValidationInterceptor();
+        final var proxyFactoryBean = new ProxyFactoryBean();
         proxyFactoryBean.addAdvice(methodValidationInterceptor);
         proxyFactoryBean.setTarget(fraudCheckerController);
         mockMvc = MockMvcBuilders.standaloneSetup(proxyFactoryBean.getObject())
                 //  Add custom Advices and Filters manually and control each
-//                .setControllerAdvice(defaultPointcutAdvisor)
                 .setControllerAdvice(new GlobalExceptionAdvice(), new FraudControllerAdvice())
                 .build();
     }
