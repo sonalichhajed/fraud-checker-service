@@ -56,7 +56,7 @@ public class FraudCheckerControllerGetMappingsValidationTest {
         mockMvc = MockMvcBuilders.standaloneSetup(proxyFactoryBean.getObject())
                 //  Add custom Advices and Filters manually and control each
 //                .setControllerAdvice(defaultPointcutAdvisor)
-                .setControllerAdvice(new GlobalExceptionAdvice(), new FraudControllerAdvice(), methodValidationInterceptor)
+                .setControllerAdvice(new GlobalExceptionAdvice(), new FraudControllerAdvice())
                 .build();
     }
 
