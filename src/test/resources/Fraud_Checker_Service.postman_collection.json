@@ -649,6 +649,32 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Setup Fraud Checker - Get All Available Stubs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{fraud_checker_url}}/setup/getStubs",
+					"host": [
+						"{{fraud_checker_url}}"
+					],
+					"path": [
+						"setup",
+						"getStubs"
+					],
+					"query": [
+						{
+							"key": "on",
+							"value": "false",
+							"description": "Turn Stubbing OFF",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

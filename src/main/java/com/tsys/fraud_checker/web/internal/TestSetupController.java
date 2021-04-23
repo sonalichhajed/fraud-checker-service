@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.logging.Logger;
 
 import static com.tsys.fraud_checker.services.VerificationServiceRouter.RouteTo.ACTUAL;
@@ -54,6 +55,12 @@ public class TestSetupController {
         stubs.put(url, fraudCheckStub);
         LOG.info("Stubs = " + stubs);
         return ResponseEntity.ok(String.format("{ \"url\" : %s, \"stub\" : \"%s\" }", url, fraudCheckStub));
+    }
+
+    @GetMapping(value = "/getStubs", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Stubs> stubs() {
+        return ResponseEntity.ok(stubs);
     }
 
     // url for setting up stubbed delay

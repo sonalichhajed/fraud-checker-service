@@ -21,6 +21,10 @@ public class Stubs {
         return Optional.ofNullable(stubbedResponses.get(url));
     }
 
+    public Map<String, StubProvider> getAllStubs() {
+        return new HashMap<>(stubbedResponses);
+    }
+
     @Override
     public String toString() {
         return "Stubs{" +
