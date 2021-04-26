@@ -28,7 +28,8 @@ ENTRYPOINT ["java","-jar","-Dspring.profiles.active=development", "/fraud-checke
 # $> docker build -t dhavaldalal/fraud-checker-service:1.0.0 --build-arg BUILD_VERSION=1.0.0 .
 
 # To run this image use
-# $> docker run -p 9001:9001 --name 'fraud_checker' dhavaldalal/fraud-checker-service:1.0.0
+# We need --expose=9001 as EXPOSE is not a part of this Dockerfile
+# $> docker run --expose=9001 -p 9001:9001 dhavaldalal/fraud-checker-service:1.0.0
 
 # To debug the container
 # $> docker run -it --rm --entrypoint sh dhavaldalal/fraud-checker-service:1.0.0
