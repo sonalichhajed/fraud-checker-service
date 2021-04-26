@@ -57,7 +57,7 @@ public class TestSetupController {
         return ResponseEntity.ok(String.format("{ \"url\" : %s, \"stub\" : \"%s\" }", url, fraudCheckStub));
     }
 
-    @GetMapping(value = "/getStubs", produces = "application/json")
+    @GetMapping(path = "/getStubs", produces = "application/json")
     @ResponseBody
     public ResponseEntity<Stubs> stubs() {
         return ResponseEntity.ok(stubs);
