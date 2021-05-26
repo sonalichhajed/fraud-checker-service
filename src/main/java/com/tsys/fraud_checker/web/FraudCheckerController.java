@@ -112,6 +112,15 @@ public class FraudCheckerController {
         return ResponseEntity.ok("valid");
     }
 
+    @ApiOperation(value = "Validate Header Parameter", produces = "text/plain")
+    @GetMapping("validateHeader")
+    ResponseEntity<String> validateHeader(
+            @RequestHeader("param")
+            @Min(5) @Max(9999) int param) {
+        LOG.info(() -> String.format("validateHeader(), Got param = %d", param));
+        return ResponseEntity.ok("valid");
+    }
+
     /**
      * https://reflectoring.io/bean-validation-with-spring-boot/
      * Bean Validation works by defining constraints to the fields

@@ -152,6 +152,56 @@ public class FraudCheckerControllerGetMappingsValidationTest {
                 content.json(response));
     }
 
+    @Test
+    public void validatesRequestHeaderParameterAtOrAboveValue5() throws Exception {
+        final var request = givenARequestFor("/validateHeader");
+        request.header("param","100");
+        final ResultActions resultActions = mockMvc.perform(request);
+        thenExpect(resultActions,
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.content().bytes("valid".getBytes()));
+    }
+
+    @Test
+    public void shoutsWhenRequestHeaderParameterIsBelow5() throws Exception {
+        final var request = givenARequestFor("/validateHeader");
+        request.header("param","4");
+        final ResultActions resultActions = mockMvc.perform(request);
+        final var response = "{\n" +
+                "    \"validationErrors\": [\n" +
+                "        {\n" +
+                "            \"fieldName\": \"validateHeader.param\",\n" +
+                "            \"message\": \"must be greater than or equal to 5\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+        final var content = MockMvcResultMatchers.content();
+        thenExpect(resultActions,
+                MockMvcResultMatchers.status().isBadRequest(),
+                content.contentType(MediaType.APPLICATION_JSON),
+                content.json(response));
+    }
+
+    @Test
+    public void shoutsWhenRequestHeaderParameterIsAbove9999() throws Exception {
+        final var request = givenARequestFor("/validateHeader");
+        request.header("param","10000");
+        final ResultActions resultActions = mockMvc.perform(request);
+        final var response = "{\n" +
+                "    \"validationErrors\": [\n" +
+                "        {\n" +
+                "            \"fieldName\": \"validateHeader.param\",\n" +
+                "            \"message\": \"must be less than or equal to 9999\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+        final var content = MockMvcResultMatchers.content();
+        thenExpect(resultActions,
+                MockMvcResultMatchers.status().isBadRequest(),
+                content.contentType(MediaType.APPLICATION_JSON),
+                content.json(response));
+    }
+
     private MockHttpServletRequestBuilder givenARequestFor(String url) {
         return MockMvcRequestBuilders.get(url)
                 .characterEncoding("UTF-8");
