@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Build docker image') {
             steps {
-				sh '''
+                sh '''
           			COMMIT_ID=$(git rev-parse HEAD)
 					docker build -t ${SERVICE_NAME}:${SHORT_COMMIT_ID} .
         		'''
@@ -36,15 +36,15 @@ pipeline {
             }
         }
         stage('Push docker image to ECR') {
-			steps {
-				sh '''
+            steps {
+                sh '''
 					eval $(aws ecr get-login --no-include-email --region us-east-1)
                 	docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
                 	docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
                 	docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
                 	docker push ${ECR_REPOSITORY_FULL_NAME}:latest
 				'''
-			}
+            }
         }
         stage('use-terraform-version') {
             steps {
