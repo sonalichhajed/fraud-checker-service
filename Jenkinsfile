@@ -5,7 +5,10 @@ pipeline {
     }
     environment {
         SHORT_COMMIT_ID = "${GIT_COMMIT}".substring(0, 7)
-        IMAGE_ID = "038062473746.dkr.ecr.us-east-1.amazonaws.com/bootcamp-2021-ee-pune-ecr/fraud-checker-service:${SHORT_COMMIT_ID}"
+        SERVICE_NAME = "fraud-checker-service"
+        ECR_REPOSITORY_NAME = "bootcamp-2021-ecr/${SERVICE_NAME}"
+        ECR_REPOSITORY_FULL_NAME = "038062473746.dkr.ecr.us-east-1.amazonaws.com/bootcamp-2021-ecr/${SERVICE_NAME}"
+        ECR_IMAGE_ID = "${REPOSITORY_NAME}:${SHORT_COMMIT_ID}"
         AWS_REGION = "us-east-1"
     }
 
@@ -19,7 +22,7 @@ pipeline {
             steps {
 				sh '''
           			COMMIT_ID=$(git rev-parse HEAD)
-					docker build -t fraud-checker-service:${SHORT_COMMIT_ID} .
+					docker build -t ${SERVICE_NAME}:${SHORT_COMMIT_ID} .
         		'''
             }
         }
@@ -27,7 +30,7 @@ pipeline {
             steps {
                 sh '''
                     aws ecr create-repository \\
-                        --repository-name bootcamp-2021-ee-pune-ecr/fraud-checker-service \\
+                        --repository-name ${ECR_REPOSITORY_NAME} \\
                         --image-scanning-configuration scanOnPush=true --region ${AWS_REGION} || true
                 '''
             }
@@ -36,10 +39,10 @@ pipeline {
 			steps {
 				sh '''
 					eval $(aws ecr get-login --no-include-email --region us-east-1)
-                	docker tag fraud-checker-service:${SHORT_COMMIT_ID} 038062473746.dkr.ecr.us-east-1.amazonaws.com/bootcamp-2021-ee-pune-ecr/fraud-checker-service:${SHORT_COMMIT_ID}
-                	docker tag fraud-checker-service:${SHORT_COMMIT_ID} 038062473746.dkr.ecr.us-east-1.amazonaws.com/bootcamp-2021-ee-pune-ecr/fraud-checker-service:latest
-                	docker push 038062473746.dkr.ecr.us-east-1.amazonaws.com/bootcamp-2021-ee-pune-ecr/fraud-checker-service:${SHORT_COMMIT_ID}
-                	docker push 038062473746.dkr.ecr.us-east-1.amazonaws.com/bootcamp-2021-ee-pune-ecr/fraud-checker-service:latest
+                	docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+                	docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
+                	docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+                	docker push ${ECR_REPOSITORY_FULL_NAME}:latest
 				'''
 			}
         }
@@ -72,7 +75,7 @@ pipeline {
                 terraformDirectory = "infrastructure"
             }
             steps {
-                passImageIdVariableToTerraform(IMAGE_ID, terraformDirectory)
+                passImageIdVariableToTerraform(ECR_IMAGE_ID, terraformDirectory)
                 dir(terraformDirectory) {
                     script {
                         ansiColor('xterm') {
