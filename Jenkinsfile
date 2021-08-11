@@ -1,9 +1,12 @@
 pipeline {
     agent any
-
+    parameters {
+        choice(name: 'CREATE_OR_DESTROY', choices: ['create', 'destroy'], description: 'Select whether you want to create or destroy the service')
+    }
     environment {
         SHORT_COMMIT_ID = "${GIT_COMMIT}".substring(0, 7)
         IMAGE_ID = "038062473746.dkr.ecr.us-east-1.amazonaws.com/bootcamp-2021-ee-pune-ecr/fraud-checker-service:${SHORT_COMMIT_ID}"
+        AWS_REGION = "us-east-1"
     }
 
     stages {
@@ -16,7 +19,7 @@ pipeline {
             steps {
 				sh '''
           			COMMIT_ID=$(git rev-parse HEAD)
-					docker build -t fraud-checker-service:${COMMIT_ID} .
+					docker build -t fraud-checker-service:${SHORT_COMMIT_ID} .
         		'''
             }
         }
@@ -25,7 +28,7 @@ pipeline {
                 sh '''
                     aws ecr create-repository \\
                         --repository-name bootcamp-2021-ee-pune-ecr/fraud-checker-service \\
-                        --image-scanning-configuration scanOnPush=true || true
+                        --image-scanning-configuration scanOnPush=true --region ${AWS_REGION} || true
                 '''
             }
         }
