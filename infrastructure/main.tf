@@ -22,7 +22,7 @@ locals {
   vpc_id           = data.terraform_remote_state.vpc.outputs.vpc_id
   alb_arn          = data.terraform_remote_state.alb.outputs.alb_arn
   cluster_name     = "${local.name_prefix}-cluster"
-  service_name     = "fraud-checker-service"
+  service_name     = "fraud-checker"
   container_port   = 9001
   container_cpu    = 10
   container_memory = 50
