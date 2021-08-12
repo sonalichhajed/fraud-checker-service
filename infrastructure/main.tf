@@ -24,6 +24,7 @@ locals {
   cluster_name     = "${local.name_prefix}-cluster"
   service_name     = "fraud-checker"
   container_port   = 9001
+  container_memory_reservation = 100
   desired_count    = 1
   common_tags = {
     CreatedBy             = "terraform"

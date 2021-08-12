@@ -2,6 +2,7 @@
   {
     "name": "${service_name}",
     "image": "${container_image}",
+    "memoryReservation": ${container_memory},
     "essential": true,
     "portMappings": [
       {

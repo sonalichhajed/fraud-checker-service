@@ -45,6 +45,7 @@ data "template_file" "task_definition" {
   vars = {
     service_name     = local.service_name
     container_image  = var.container_image
+    container_memory_reservation = local.container_memory_reservation
     container_port   = local.container_port
     log_group        = local.service_name
     region           = local.aws_region
