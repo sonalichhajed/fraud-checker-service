@@ -21,9 +21,8 @@ pipeline {
         stage('Build docker image') {
             steps {
                 sh '''
-          			COMMIT_ID=$(git rev-parse HEAD)
-					docker build -t ${SERVICE_NAME}:${SHORT_COMMIT_ID} .
-        		'''
+                    docker build -t ${SERVICE_NAME}:${SHORT_COMMIT_ID} .
+                '''
             }
         }
         stage('Create ECR repo if doesnt exists') {
@@ -38,12 +37,12 @@ pipeline {
         stage('Push docker image to ECR') {
             steps {
                 sh '''
-					eval $(aws ecr get-login --no-include-email --region us-east-1)
-                	docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
-                	docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
-                	docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
-                	docker push ${ECR_REPOSITORY_FULL_NAME}:latest
-				'''
+                    eval $(aws ecr get-login --no-include-email --region us-east-1)
+                    docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+                    docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
+                    docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+                    docker push ${ECR_REPOSITORY_FULL_NAME}:latest
+                '''
             }
         }
         stage('use-terraform-version') {
@@ -51,14 +50,14 @@ pipeline {
                 dir('infrastructure') {
                     script {
                         int tfenvUseExitCode = sh(
-                                returnStatus: true,
-                                label: 'tfenv-use',
-                                script: '''
-                                    REQUIRED_TERRAFORM_VERSION=$(grep required_version *.tf | cut -d '\"' -f 2)
-                                    echo "Required terraform version is: ${REQUIRED_TERRAFORM_VERSION}";
-                                    tfenv install ${REQUIRED_TERRAFORM_VERSION};
-                                    tfenv use ${REQUIRED_TERRAFORM_VERSION};
-                                '''
+                            returnStatus: true,
+                            label: 'tfenv-use',
+                            script: '''
+                                REQUIRED_TERRAFORM_VERSION=$(grep required_version *.tf | cut -d '\"' -f 2)
+                                echo "Required terraform version is: ${REQUIRED_TERRAFORM_VERSION}";
+                                tfenv install ${REQUIRED_TERRAFORM_VERSION};
+                                tfenv use ${REQUIRED_TERRAFORM_VERSION};
+                            '''
                         )
                         if (tfenvUseExitCode) {
                             error("Attempt to read & provision specific terraform version failed")
@@ -80,14 +79,14 @@ pipeline {
                     script {
                         ansiColor('xterm') {
                             env.tfPlanExitCode = sh(
-                                    returnStatus: true,
-                                    label: 'tf-plan',
-                                    script: '''
-                                export TF_IN_AUTOMATION=true
-                                export TF_INPUT=0
-                                terraform init
-                                terraform plan -detailed-exitcode -out tfplan 
-                            '''
+                                returnStatus: true,
+                                label: 'tf-plan',
+                                script: '''
+                                    export TF_IN_AUTOMATION=true
+                                    export TF_INPUT=0
+                                    terraform init
+                                    terraform plan -detailed-exitcode -out tfplan 
+                                '''
                             )
                         }
                         if (env.tfPlanExitCode == '0') {
@@ -113,14 +112,14 @@ pipeline {
                     script {
                         ansiColor('xterm') {
                             env.tfPlanExitCode = sh(
-                                    returnStatus: true,
-                                    label: 'tf-plan',
-                                    script: '''
-                                export TF_IN_AUTOMATION=true
-                                export TF_INPUT=0
-                                terraform init
-                                terraform plan -destroy -detailed-exitcode -out tfplan 
-                            '''
+                                returnStatus: true,
+                                label: 'tf-plan',
+                                script: '''
+                                    export TF_IN_AUTOMATION=true
+                                    export TF_INPUT=0
+                                    terraform init
+                                    terraform plan -destroy -detailed-exitcode -out tfplan 
+                                '''
                             )
                         }
                         if (env.tfPlanExitCode == '0') {
@@ -164,8 +163,8 @@ pipeline {
                     script {
                         ansiColor('xterm') {
                             sh(
-                                    label: 'tf-apply',
-                                    script: '''
+                                label: 'tf-apply',
+                                script: '''
                                     export TF_IN_AUTOMATION=true
                                     export TF_INPUT=0
                                     export TF_LOG=DEBUG 
