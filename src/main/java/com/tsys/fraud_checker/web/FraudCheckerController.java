@@ -81,7 +81,7 @@ public class FraudCheckerController {
     @GetMapping(value = "ping", produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> pong() {
-        return ResponseEntity.ok(String.format("{ \"PONG\" : \"%s is running fine!\" }", FraudCheckerController.class.getSimpleName()));
+        return ResponseEntity.ok(String.format("{ \"PONG\" : \"%s is running all fine!\" }", FraudCheckerController.class.getSimpleName()));
     }
 
     @ApiOperation(value = "Validate Path Variable", produces = "text/plain")
