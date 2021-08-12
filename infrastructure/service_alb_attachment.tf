@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "service_tg" {
 
   health_check {
     interval            = 30
-    path                = "/"
+    path                = "/fraud-checker/ping"
     port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 10
