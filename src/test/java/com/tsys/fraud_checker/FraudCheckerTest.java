@@ -70,7 +70,7 @@ public class FraudCheckerTest {
 
         // Then
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-        assertThat(response.getBody(), is("{ \"PONG\" : \"FraudCheckerController is running fine!\" }"));
+        assertThat(response.getBody(), is("{ \"PONG\" : \"FraudCheckerController is running fine! Green deployment\" }"));
     }
 
     @Test
