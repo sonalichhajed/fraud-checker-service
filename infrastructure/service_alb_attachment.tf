@@ -37,7 +37,7 @@ resource "aws_lb_target_group" "service_tg" {
 }
 
 resource "aws_lb_target_group" "service_green_tg" {
-  name     = "${local.name_prefix}-${local.service_name}-green-tg"
+  name     = "${local.name_prefix}-${local.service_name}-g-tg"
   port     = "8080"
   protocol = "HTTP"
   vpc_id   = local.vpc_id
