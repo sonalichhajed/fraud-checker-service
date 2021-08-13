@@ -141,9 +141,34 @@ resource "aws_iam_role" "example" {
 EOF
 }
 
+resource "aws_iam_policy" "policy" {
+  name        = "example-role-policy"
+  description = "A test policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ecs:DescribeServices"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:ecs:us-east-1:038062473746:service/bootcamp-2021-cluster/fraud-checker"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role_policy_attachment" "AWSCodeDeployRole" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
   role       = aws_iam_role.example.name
+}
+
+resource "aws_iam_role_policy_attachment" "AWSCodeDeployRole_Policy" {
+  role       = aws_iam_role.example.name
+  policy_arn = aws_iam_policy.policy.arn
 }
 
 resource "aws_codedeploy_app" "main" {
