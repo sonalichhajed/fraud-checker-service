@@ -1,5 +1,14 @@
 # Getting Started
 
+### Pre-requisites
+ 
+Before provisioning any code with Jenkinsfile,
+- Update all your files to prevent name-space conflict, 
+since all resources will be provisioned in a shared AWS account
+```bash
+$ ./updateUsername.sh
+```
+
 ## About Fraud Checker Service
 ### Address Verification Service (AVS)
 AVS is an effective security measure to detect online fraud.

@@ -8,7 +8,7 @@ data "aws_lb_listener" "alb_port_443_listener" {
 }
 
 resource "aws_lb_target_group" "service_tg" {
-  name     = "${local.name_prefix}-${local.service_name}-tg"
+  name     = "REPLACE-USERNAME-${local.service_name}-tg"
   port     = "8080"
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -26,7 +26,7 @@ resource "aws_lb_target_group" "service_tg" {
 
   tags = merge(
     map(
-      "Name", "${local.name_prefix}-${local.service_name}-ecs-service-tg"
+      "Name", "${local.name_prefix}-${local.service_name}-tg"
     ),
     local.common_tags
   )
@@ -46,7 +46,7 @@ resource "aws_lb_listener_rule" "forward_to_service" {
 
   condition {
     host_header {
-      values = ["api.bootcamp2021.online"]
+      values = ["REPLACE-USERNAME.api.bootcamp2021.online"]
     }
   }
 
