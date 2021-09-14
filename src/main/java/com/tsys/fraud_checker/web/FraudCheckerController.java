@@ -84,7 +84,7 @@ public class FraudCheckerController {
         return ResponseEntity.ok(String.format("{ \"PONG\" : \"%s is running fine!\" }", FraudCheckerController.class.getSimpleName()));
     }
     
-    @ApiOperation(value = "Am I healthy?", produces = "application/json")
+    /**@ApiOperation(value = "Am I healthy?", produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Got Health status", response = String.class),
 //            @ApiResponse(code = 429, message = "Too Many Requests")
@@ -93,7 +93,7 @@ public class FraudCheckerController {
     @ResponseBody
     public ResponseEntity<String> health() {
         return ResponseEntity.ok(String.format("{ \"Status\" : \"%s is running OK!\" }", FraudCheckerController.class.getSimpleName()));
-    }
+    }*/
 
     @ApiOperation(value = "Validate Path Variable", produces = "text/plain")
     // The @ApiParam annotation is for the parameters of an API resource request,
