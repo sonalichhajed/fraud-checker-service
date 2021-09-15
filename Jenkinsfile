@@ -1,7 +1,7 @@
 pipeline {
     agent any
 	parameters {
-		TEAM_NAME = TBD
+		TEAM_NAME = "replace-me"
 		SHORT_COMMIT_ID = "${GIT_COMMIT}".substring(0, 7)
 		SERVICE_NAME = "fraud-checker-service"
 		ECR_REPOSITORY_NAME = "${TEAM_NAME}-bootcamp-2021-ecr/${SERVICE_NAME}"
