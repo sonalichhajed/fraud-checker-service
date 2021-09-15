@@ -2,12 +2,12 @@ pipeline {
     agent any
 	environment {
 		TEAM_NAME = "replace-me"
+		AWS_REGION = "us-east-2"
 		SHORT_COMMIT_ID = "${GIT_COMMIT}".substring(0, 7)
 		SERVICE_NAME = "fraud-checker-service"
 		ECR_REPOSITORY_NAME = "${TEAM_NAME}-bootcamp-2021-ecr/${SERVICE_NAME}"
-		ECR_REPOSITORY_FULL_NAME = "038062473746.dkr.ecr.us-east-1.amazonaws.com/${ECR_REPOSITORY_NAME}"
+		ECR_REPOSITORY_FULL_NAME = "038062473746.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}"
 		ECR_IMAGE_ID = "${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}"
-		AWS_REGION = "us-east-2"
 	}
     stages {
         stage('Build & Test') {
