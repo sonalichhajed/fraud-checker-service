@@ -1,6 +1,6 @@
 pipeline {
     agent any
-	parameters {
+	environment {
 		TEAM_NAME = "replace-me"
 		SHORT_COMMIT_ID = "${GIT_COMMIT}".substring(0, 7)
 		SERVICE_NAME = "fraud-checker-service"
