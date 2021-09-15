@@ -1,18 +1,47 @@
 pipeline {
-	agent any
-	stages {
-		stage('Build & Test') {
+    agent any
+	parameters {
+		TEAM_NAME = TBD
+		SHORT_COMMIT_ID = "${GIT_COMMIT}".substring(0, 7)
+		SERVICE_NAME = "fraud-checker-service"
+		ECR_REPOSITORY_NAME = "${TEAM_NAME}-bootcamp-2021-ecr/${SERVICE_NAME}"
+		ECR_REPOSITORY_FULL_NAME = "038062473746.dkr.ecr.us-east-1.amazonaws.com/${ECR_REPOSITORY_NAME}"
+		ECR_IMAGE_ID = "${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}"
+		AWS_REGION = "us-east-1"
+	}
+    stages {
+        stage('Build & Test') {
+            steps {
+                sh './gradlew clean build'
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                sh '''
+					COMMIT_ID=$(git rev-parse HEAD)
+					docker build -t fraud-checker-service:${COMMIT_ID} .
+				'''
+            }
+        }
+		stage('Create ECR repo if doesnt exists') {
 			steps {
-				sh './gradlew clean build'
+				sh '''
+                    aws ecr create-repository \\
+                        --repository-name ${ECR_REPOSITORY_NAME} \\
+                        --image-scanning-configuration scanOnPush=true --region ${AWS_REGION} || true
+                '''
 			}
 		}
-    stage('Build docker image') {
-      steps {
-        sh '''
-          COMMIT_ID=$(git rev-parse HEAD)
-          docker build -t fraud-checker-service:${COMMIT_ID} .
-        '''
-      }
+		stage('Push docker image to ECR') {
+			steps {
+				sh '''
+                    eval $(aws ecr get-login --no-include-email --region us-east-1)
+                    docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+                    docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
+                    docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+                    docker push ${ECR_REPOSITORY_FULL_NAME}:latest
+                '''
+			}
+		}
     }
-	}
 }
