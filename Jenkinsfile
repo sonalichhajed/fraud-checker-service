@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh '''
 					COMMIT_ID=$(git rev-parse HEAD)
-					docker build -t fraud-checker-service:${COMMIT_ID} .
+					docker build -t fraud-checker-service:${SHORT_COMMIT_ID} .
 				'''
             }
         }
