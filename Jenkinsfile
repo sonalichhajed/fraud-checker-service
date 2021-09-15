@@ -7,7 +7,7 @@ pipeline {
 		ECR_REPOSITORY_NAME = "${TEAM_NAME}-bootcamp-2021-ecr/${SERVICE_NAME}"
 		ECR_REPOSITORY_FULL_NAME = "038062473746.dkr.ecr.us-east-1.amazonaws.com/${ECR_REPOSITORY_NAME}"
 		ECR_IMAGE_ID = "${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}"
-		AWS_REGION = "us-east-1"
+		AWS_REGION = "us-east-2"
 	}
     stages {
         stage('Build & Test') {
@@ -35,7 +35,7 @@ pipeline {
 		stage('Push docker image to ECR') {
 			steps {
 				sh '''
-                    eval $(aws ecr get-login --no-include-email --region us-east-1)
+                    eval $(aws ecr get-login --no-include-email --region ${AWS_REGION})
                     docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
                     docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
                     docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
