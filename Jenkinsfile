@@ -12,8 +12,8 @@ pipeline {
 	stages {
 		stage('Build & Test') {
 			steps {
-                sh './gradlew clean build'
-            }
+				sh './gradlew clean build'
+			}
 		}
 		stage('Build docker image') {
 			steps {
@@ -35,12 +35,12 @@ pipeline {
 		stage('Push docker image to ECR') {
 			steps {
 				sh '''
-                    eval $(aws ecr get-login --no-include-email --region ${AWS_REGION})
-                    docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
-                    docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
-                    docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
-                    docker push ${ECR_REPOSITORY_FULL_NAME}:latest
-                '''
+					eval $(aws ecr get-login --no-include-email --region ${AWS_REGION})
+					docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+					docker tag ${SERVICE_NAME}:${SHORT_COMMIT_ID} ${ECR_REPOSITORY_FULL_NAME}:latest
+					docker push ${ECR_REPOSITORY_FULL_NAME}:${SHORT_COMMIT_ID}
+					docker push ${ECR_REPOSITORY_FULL_NAME}:latest
+				'''
 			}
 		}
 	}
